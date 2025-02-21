@@ -14,9 +14,19 @@ interface LoginResponse {
   };
 }
 
+interface SignupRequest{
+  username: string;
+  email: string;
+  password: string;
+}
+
 class AuthService {
   static async login(credentials: LoginRequest) {
     return ApiService.post<LoginResponse>("login", credentials);
+  }
+
+  static async signup(data: SignupRequest){
+    return ApiService.post<void>("signup", data)
   }
 
   static async getProfile() {

@@ -1,14 +1,16 @@
-import { useForm } from "@mantine/form";
-import { notifications as msg } from "@mantine/notifications";
 import {
-  TextInput,
-  PasswordInput,
   Button,
-  Group,
   Checkbox,
+  Group,
+  PasswordInput,
+  TextInput,
 } from "@mantine/core";
+
+import AuthService from "src/services/AuthService";
 import { DateInput } from "@mantine/dates";
-import { createUser } from "src/services";
+import { notifications as msg } from "@mantine/notifications";
+import { useForm } from "@mantine/form";
+
 export function SignupForm({ close }: { close: () => void }) {
   const form = useForm({
     initialValues: {
@@ -24,9 +26,12 @@ export function SignupForm({ close }: { close: () => void }) {
     },
   });
 
-
-  const handleSubmit = async (values: Record<string, any>) => {
-    await createUser(values);
+  const handleSubmit = async (values: {
+    username: string;
+    email: string;
+    password: string;
+  }) => {
+    await AuthService.signup(values);
     close();
   };
 

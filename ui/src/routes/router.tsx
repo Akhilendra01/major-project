@@ -4,7 +4,6 @@ import {
   LandingPage,
   NotFound,
   Search,
-  UserProfile,
 } from "src/pages";
 import { Route, Routes } from "react-router-dom";
 
@@ -38,7 +37,7 @@ export default function Router() {
           </RequiredLogin>
         }
       />
-      <Route path="/@/:username" element={<UserProfile />} />
+      {/* <Route path="/@/:username" element={<UserProfile />} /> */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

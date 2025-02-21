@@ -2,7 +2,6 @@ import { AuthProps, Credentials, User } from "src/interfaces";
 import { createContext, useEffect, useState } from "react";
 
 import AuthService from "src/services/AuthService";
-import { getUserData } from "src/services";
 import { notifications } from "@mantine/notifications";
 import { useNavigate } from "react-router";
 
@@ -65,20 +64,6 @@ export default function AuthProvider({
     setUser({});
     navigate("/", { replace: true });
   }
-
-  useEffect(() => {
-    if (localStorage.getItem("username")) {
-      getUserData(localStorage.getItem("username")).then((data) => {
-        if (data) {
-          if (data) {
-            setUser(data);
-            setIsLoggedIn(true);
-            localStorage.setItem("lastlogin", JSON.stringify(Date.now()));
-          }
-        }
-      });
-    }
-  }, [isLoggedIn]);
 
   return (
     <Auth.Provider
