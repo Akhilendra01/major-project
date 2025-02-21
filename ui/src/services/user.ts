@@ -1,5 +1,5 @@
-import { notifications } from "@mantine/notifications";
 import { User } from "src/interfaces";
+import { notifications } from "@mantine/notifications";
 
 const reqheader = {
   Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -48,22 +48,13 @@ export async function addFriend(username: string, friend: string): Promise<boole
   })
 }
 
-  function createFormData(data: Record<string, any>): FormData {
-    const formData = new FormData();
-
-    for (const property in data) {
-      if (Object.prototype.hasOwnProperty.call(data, property)) {
-        formData.append(property, data[property]);
-      }
-    }
-
-    return formData;
-  }
 export async function createUser(values: Record<string, any>){
-  const fData = createFormData(values);
   await fetch(`${import.meta.env.VITE_BASE_URL}/signup`, {
     method: "POST",
-    body: fData,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(values),
   })
     .then((res) => res.json())
     .then((data) => {

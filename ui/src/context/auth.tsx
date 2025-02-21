@@ -1,8 +1,9 @@
-import { createContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router";
 import { AuthProps, Credentials, User } from "src/interfaces";
+import { createContext, useEffect, useState } from "react";
 import { login, logout } from "src/services";
+
 import { getUserData } from "src/services";
+import { useNavigate } from "react-router";
 
 const Auth = createContext<AuthProps>({
   user: {},
@@ -23,10 +24,7 @@ export default function AuthProvider({
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   async function loginHandler(values: Credentials) {
-    const fData = new FormData();
-    fData.append("email", values.email);
-    fData.append("password", values.password);
-    const res = await login(fData, setUser, setIsLoggedIn);
+    const res = await login(values, setUser, setIsLoggedIn);
     if (res) navigate("/dashboard");
   }
 
