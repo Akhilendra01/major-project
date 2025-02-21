@@ -9,7 +9,7 @@ async function LoginController(req, res) {
   const user = await User.findOne({ email: { $eq: email } });
 
   if (!user) {
-      res.send({
+    res.send({
       status: "404",
       message: "user not exists",
     });
@@ -36,9 +36,11 @@ async function LoginController(req, res) {
   );
   res.send({
     status: 200,
-    token: token,
+    data: {
+      token: token,
+      user: user,
+    },
     message: "login success",
-    user: user,
   });
 }
 module.exports = LoginController;

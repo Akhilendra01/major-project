@@ -1,8 +1,9 @@
 import { AuthProps, Credentials, User } from "src/interfaces";
 import { createContext, useEffect, useState } from "react";
-import { login, logout } from "src/services";
 
+import AuthService from "src/services/AuthService";
 import { getUserData } from "src/services";
+import { notifications } from "@mantine/notifications";
 import { useNavigate } from "react-router";
 
 const Auth = createContext<AuthProps>({
@@ -24,12 +25,44 @@ export default function AuthProvider({
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   async function loginHandler(values: Credentials) {
-    const res = await login(values, setUser, setIsLoggedIn);
-    if (res) navigate("/dashboard");
+    const res = await AuthService.login(values);
+
+    if (res.status === 200) {
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("username", res.data.user.username);
+      setUser(res.data.user);
+      setIsLoggedIn(true);
+      localStorage.setItem("lastlogin", JSON.stringify(Date.now()));
+      notifications.show({
+        title: "Logged In Successfully",
+        message: `Hello, @${res.data.user.username}!`,
+      });
+      return true;
+    } else if (res.status === 401) {
+      notifications.show({
+        title: "Login Failure",
+        message: `Bad Credentials`,
+      });
+      return false;
+    } else if (res.status === 404) {
+      notifications.show({
+        title: "Bad Credentials",
+        message: `User not exists`,
+      });
+      return false;
+    }
+    navigate("/dashboard");
   }
 
   function logoutHandler() {
-    logout(setIsLoggedIn, user, setUser);
+    AuthService.logout();
+    localStorage.clear();
+    setIsLoggedIn(false);
+    notifications.show({
+      title: "Logged Out Successfully",
+      message: `Bye! Good Day, @${user.username}`,
+    });
+    setUser({});
     navigate("/", { replace: true });
   }
 
