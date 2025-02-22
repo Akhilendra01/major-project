@@ -1,15 +1,16 @@
-import { Button, Menu } from "@mantine/core";
 import { AiOutlineDashboard, AiOutlineLogout } from "react-icons/ai";
-import { useContext } from "react";
-import { Auth } from "src/context";
+import { Button, Menu } from "@mantine/core";
+
 import { AiOutlineProfile } from "react-icons/ai";
+import { Auth } from "src/context";
+import { useContext } from "react";
 import { useNavigate } from "react-router";
 
 export default function HeaderDropdown() {
   const { user, logoutHandler } = useContext(Auth);
   const navigate = useNavigate();
   return (
-    <Menu trigger="hover" openDelay={100} closeDelay={400} width={150}>
+    <Menu trigger="click" openDelay={100} closeDelay={400} width={150}>
       <Menu.Target>
         <Button
           sx={{

@@ -14,7 +14,9 @@ export default function HeaderContent() {
     >
       <Burger
         opened={opened}
+        m={10}
         onClick={() => {
+          if(isLoggedIn)
           setOpened(!opened);
         }}
       />
