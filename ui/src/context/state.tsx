@@ -1,6 +1,6 @@
 import { createContext, useState } from "react";
-import { StateProps } from "src/interfaces";
 
+import { StateProps } from "src/interfaces";
 
 const State = createContext<StateProps>({
   opened: false,

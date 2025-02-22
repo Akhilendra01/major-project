@@ -2,18 +2,23 @@ import { AiOutlineOrderedList, AiOutlinePlus, AiOutlineSearch, AiOutlineWechat }
 import { Button, Navbar } from "@mantine/core";
 
 import Navlink from "src/components/appshell/Navlink";
+import { State } from "src/context";
+import { useContext } from "react";
 import { useNavigate } from "react-router";
 
 export default function NavbarContent() {
   const navigate=useNavigate();
+  const {opened, setOpened}=useContext(State);
   return (
-    <Navbar width={{ base: 200, sm: 200 }} height={800}>
+    opened &&
+    <Navbar >
       <Navlink>
         <Button
           size="md"
           sx={{ width: "140px" }}
           onClick={() => {
             navigate("/feed");
+            setOpened(false);
           }}
         >
           <AiOutlineOrderedList />
@@ -32,6 +37,7 @@ export default function NavbarContent() {
           sx={{ width: "140px" }}
           onClick={() => {
             navigate("/chat");
+            setOpened(false);
           }}
         >
           <AiOutlineWechat />
@@ -44,6 +50,7 @@ export default function NavbarContent() {
           sx={{ width: "140px" }}
           onClick={() => {
             navigate("/search");
+            setOpened(false);
           }}
         >
           <AiOutlineSearch />
