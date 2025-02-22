@@ -30,11 +30,11 @@ export function Chat() {
   };
 
   return (
-    <Container className="flex flex-col h-[calc(100vh-100px)] w-full p-0 overflow-hidden bg-gray-100 ml-auto">
+    <Container className="flex flex-col h-[calc(100vh-50px)] p-0 w-full-xl overflow-hidden bg-gray-100">
       {/* Chat Messages Scroll Area */}
       <ScrollArea
         className="flex-1 p-4 space-y-2"
-        style={{ height: "calc(100vh - 160px)" }} // Adjust height as needed
+        style={{ height: "calc(100vh - 160px)"}} // Adjust height as needed
         type="auto" // Ensures scrollbar only appears when needed
       >
         {messages.map((msg, index) => (

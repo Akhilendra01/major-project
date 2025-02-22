@@ -10,6 +10,7 @@ export default function Appshell({ children }: { children: React.ReactNode }) {
     <AppShell
       navbar={isLoggedIn ? <NavbarContent /> : <></>}
       header={<HeaderContent />}
+      padding={0}
     >
       {children}
     </AppShell>
