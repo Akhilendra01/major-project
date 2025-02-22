@@ -18,7 +18,6 @@ export default function RequiredLogin({
     async function validateUser() {
       try {
         const res = await AuthService.validateToken();
-        console.log(res.data.user)
         if (res.data.message!=="invalid signature") {
           setUser(res.data.user)
           setIsLoggedIn(true);

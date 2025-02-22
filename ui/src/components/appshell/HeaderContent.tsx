@@ -4,7 +4,7 @@ import { Auth } from "src/context";
 import HeaderDropdown from "src/components/appshell/HeaderDropdown";
 import { useContext } from "react";
 
-export default function NavbarContent() {
+export default function HeaderContent() {
   const { isLoggedIn } = useContext(Auth);
   return (
     <Header height={50} className="flex flex-row items-center justify-center m-0 p-0">
