@@ -5,7 +5,7 @@ export interface ApiResponse<T> {
   error?: string;
 }
 
-class ApiService {
+export class ApiService {
   private baseURL: string;
 
   constructor(baseURL?: string) {

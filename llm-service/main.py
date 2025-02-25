@@ -53,7 +53,7 @@ def home():
 @app.route("/predict", methods=["POST"])
 def predict():
     data = request.json  # Get input data in JSON format
-    topic = data["topic"]  # Assuming the input is in this format
+    topic = data["prompt"]  # Assuming the input is in this format
 
     response = chain.invoke({"topics": topic})
     return response

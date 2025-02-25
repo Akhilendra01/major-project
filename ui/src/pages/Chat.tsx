@@ -1,6 +1,7 @@
 import { Button, Container, Paper, ScrollArea, TextInput } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
 
+import LlmService from "src/services/LlmService";
 import { Send } from "lucide-react";
 
 export function Chat() {
@@ -14,19 +15,18 @@ export function Chat() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (!input.trim()) return;
 
     const userMessage = { text: input, sender: "user" };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
+    const response = await LlmService.predict(input);
 
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        { text: "This is a bot response!", sender: "bot" },
-      ]);
-    }, 1000);
+    setMessages((prev) => [
+      ...prev,
+      { text: response.data.text, sender: "bot" },
+    ]);
   };
 
   return (
@@ -34,7 +34,7 @@ export function Chat() {
       {/* Chat Messages Scroll Area */}
       <ScrollArea
         className="flex-1 p-4 space-y-2"
-        style={{ height: "calc(100vh - 160px)"}} // Adjust height as needed
+        style={{ height: "calc(100vh - 160px)" }} // Adjust height as needed
         type="auto" // Ensures scrollbar only appears when needed
       >
         {messages.map((msg, index) => (
@@ -42,7 +42,9 @@ export function Chat() {
             key={index}
             shadow="xs"
             className={`p-3 rounded-lg max-w-xs ${
-              msg.sender === "user" ? "bg-green-100 ml-auto my-4" : "bg-gray-200 my-4"
+              msg.sender === "user"
+                ? "bg-green-100 ml-auto my-4"
+                : "bg-gray-200 my-4"
             }`}
           >
             {msg.text}
