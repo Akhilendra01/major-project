@@ -1,36 +1,31 @@
 import { Button, Grid, NumberInput, Select, Text } from "@mantine/core";
+import { useEffect, useState } from "react";
 
+import ConstantsService from "src/services/ConstantsService";
 import { useMediaQuery } from "@mantine/hooks";
-import { useState } from "react";
-
-const companies = [
-  "Google",
-  "Microsoft",
-  "Meta",
-  "Amazon",
-  "Morgan Stanley",
-  "J P Morgan",
-];
-const roles = [
-  "Software Engineer",
-  "Data Scientist",
-  "Product Manager",
-  "Business Analyst",
-  "Financial Analyst",
-  "Investment Banker",
-];
 
 export function Search() {
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   const [org, setOrg] = useState<string | null>("");
   const [role, setRole] = useState<string | null>("");
-  const [year, setYear] = useState<number|"">("");
+  const [year, setYear] = useState<number | "">("");
 
-  const search=()=>{
+  const [companies, setCompanies] = useState<string[]>([]);
+  const [positions, setPositions] = useState<string[]>([]);
+
+  useEffect(() => {
+    console.log('called');
+    ConstantsService.getConstants().then((response) => {
+      setCompanies(response.data.companies.map((company: any) => company.name));  
+      setPositions(response.data.positions.map((position: any) => position.title));
+    }); 
+  }, []);
+
+  const search = () => {
     //TODO: complete implementation
-    console.log(org,role,year);
-  }
+    console.log(org, role, year);
+  };
 
   return (
     <>
@@ -47,7 +42,12 @@ export function Search() {
           />
         </Grid.Col>
         <Grid.Col span={isMobile ? 12 : 3}>
-          <Select data={roles} placeholder="Select role" value={role} onChange={setRole}/>
+          <Select
+            data={positions}
+            placeholder="Select role"
+            value={role}
+            onChange={setRole}
+          />
         </Grid.Col>
         <Grid.Col span={isMobile ? 12 : 3}>
           <NumberInput
