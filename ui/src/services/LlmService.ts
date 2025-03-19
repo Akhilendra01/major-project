@@ -1,7 +1,7 @@
 import { ApiService } from "./ApiService";
 
 interface PredictResponse{
-    text: string;
+  text: string;
 }
 
 class LlmService {
@@ -10,7 +10,7 @@ class LlmService {
   );
 
   static async predict(prompt: string) {
-    return this.apiService.post<PredictResponse>("predict", { prompt: prompt });
+    return await this.apiService.post<PredictResponse>("predict", { prompt: prompt });
   }
 }
 

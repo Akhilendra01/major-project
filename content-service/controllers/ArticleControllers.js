@@ -4,7 +4,7 @@ async function createArticle(req, res) {
   const { title, content, author, roleTag, companyTag } = req.body;
   const article = new Article({ title, content, author, roleTag, companyTag});
   await article.save();
-  return res.json(article);
+  return res.status(200).json({"message": "Article posted successfully"});
 }
 
 async function getArticles(req, res) {
