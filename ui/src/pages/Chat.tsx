@@ -4,6 +4,39 @@ import { useEffect, useRef, useState } from "react";
 import LlmService from "src/services/LlmService";
 import { Send } from "lucide-react";
 
+function formatLLMOutput(text: string): string {
+  if (!text) return ""; // Handle empty input
+
+  // Bold **Title** or **Headings**
+  text = text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+
+  // Italics *text*
+  text = text.replace(/\*(.*?)\*/g, "<i>$1</i>");
+
+  // Convert markdown-style lists (`- item`) into HTML lists
+  text = text.replace(/^- (.*?)$/gm, "<li>$1</li>");
+
+  // Convert Markdown-style headers to HTML headers
+  text = text.replace(/(#+) (.*)/g, (_, hashes: string, title: string) => {
+    const level = Math.min(hashes.length, 6); // Ensure max h6
+    return `<h${level}>${title}</h${level}>`;
+  });
+
+  // Fix Python Code Blocks (` ```python ... ``` `)
+  text = text.replace(
+    /```python([\s\S]*?)```/g,
+    '<pre><code class="language-python">$1</code></pre>'
+  );
+
+  // Convert inline code (single backticks `code`) to <code> tags
+  text = text.replace(/`([^`]+)`/g, "<code>$1</code>");
+
+  // Replace new lines with `<br>` for better readability
+  text = text.replace(/\n/g, "<br>");
+
+  return text;
+}
+
 export function Chat() {
   const [messages, setMessages] = useState([
     { text: "Hello! How can I help you today?", sender: "bot" },
@@ -22,10 +55,9 @@ export function Chat() {
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     const response = await LlmService.predict(input);
-
     setMessages((prev) => [
       ...prev,
-      { text: response.data.text, sender: "bot" },
+      { text: formatLLMOutput(response.text), sender: "bot" },
     ]);
   };
 
@@ -47,7 +79,7 @@ export function Chat() {
                 : "bg-gray-200 my-4"
             }`}
           >
-            {msg.text}
+            <div dangerouslySetInnerHTML={{ __html: msg.text }} />
           </Paper>
         ))}
         <div ref={messagesEndRef} />
