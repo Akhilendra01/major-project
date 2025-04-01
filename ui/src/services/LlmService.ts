@@ -1,16 +1,34 @@
-import { ApiService } from "./ApiService";
+// import { ApiService } from "./ApiService";
 
-interface PredictResponse{
-  text: string;
-}
+// interface PredictResponse {
+//   text: string;
+// }
 
 class LlmService {
-  private static apiService = new ApiService(
-    import.meta.env.VITE_BASE_LLM_SERVICE
-  );
+  static async predict(prompt: string, onData: (chunk: string) => void) {
+    const response = await fetch(
+      `${import.meta.env.VITE_BASE_LLM_SERVICE}/predict`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      }
+    );
 
-  static async predict(prompt: string) {
-    return await this.apiService.post<PredictResponse>("predict", { prompt: prompt });
+    if (!response.body) return;
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+
+    let accumulatedText = "";
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value, { stream: true });
+      accumulatedText += chunk;
+      onData(accumulatedText);
+    }
   }
 }
 

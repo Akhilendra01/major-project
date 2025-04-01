@@ -8,10 +8,13 @@ function formatLLMOutput(text: string): string {
   if (!text) return ""; // Handle empty input
 
   // Bold **Title** or **Headings**
+  // Bold **Title** or **Headings**
   text = text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
 
   // Italics *text*
   text = text.replace(/\*(.*?)\*/g, "<i>$1</i>");
+
+  // Convert markdown-style lists (`- item`) into HTML lists
 
   // Convert markdown-style lists (`- item`) into HTML lists
   text = text.replace(/^- (.*?)$/gm, "<li>$1</li>");
@@ -19,8 +22,17 @@ function formatLLMOutput(text: string): string {
   // Convert Markdown-style headers to HTML headers
   text = text.replace(/(#+) (.*)/g, (_, hashes: string, title: string) => {
     const level = Math.min(hashes.length, 6); // Ensure max h6
+    const level = Math.min(hashes.length, 6); // Ensure max h6
     return `<h${level}>${title}</h${level}>`;
   });
+
+  // Fix Python Code Blocks (` ```python ... ``` `)
+  text = text.replace(
+    /```python([\s\S]*?)```/g,
+    '<pre><code class="language-python">$1</code></pre>'
+  );
+
+  // Convert inline code (single backticks `code`) to <code> tags
 
   // Fix Python Code Blocks (` ```python ... ``` `)
   text = text.replace(
@@ -48,18 +60,21 @@ export function Chat() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const sendMessage = async () => {
-    if (!input.trim()) return;
+const sendMessage = async () => {
+  if (!input.trim()) return;
 
-    const userMessage = { text: input, sender: "user" };
-    setMessages((prev) => [...prev, userMessage]);
-    setInput("");
-    const response = await LlmService.predict(input);
-    setMessages((prev) => [
-      ...prev,
-      { text: formatLLMOutput(response.text), sender: "bot" },
-    ]);
-  };
+  const userMessage = { text: input, sender: "user" };
+  setMessages((prev) => [...prev, userMessage]);
+  setInput("");
+
+  let botMessage = { text: "", sender: "bot" };
+  setMessages((prev) => [...prev, botMessage]);
+
+  await LlmService.predict(input, (chunk) => {
+    botMessage.text = formatLLMOutput(chunk);
+    setMessages((prev) => [...prev.slice(0, -1), botMessage]);
+  });
+};
 
   return (
     <Container className="flex flex-col h-[calc(100vh-50px)] p-0 w-full-xl overflow-hidden bg-gray-100">
