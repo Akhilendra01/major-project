@@ -48,18 +48,21 @@ export function Chat() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const sendMessage = async () => {
-    if (!input.trim()) return;
+const sendMessage = async () => {
+  if (!input.trim()) return;
 
-    const userMessage = { text: input, sender: "user" };
-    setMessages((prev) => [...prev, userMessage]);
-    setInput("");
-    const response = await LlmService.predict(input);
-    setMessages((prev) => [
-      ...prev,
-      { text: formatLLMOutput(response.text), sender: "bot" },
-    ]);
-  };
+  const userMessage = { text: input, sender: "user" };
+  setMessages((prev) => [...prev, userMessage]);
+  setInput("");
+
+  let botMessage = { text: "", sender: "bot" };
+  setMessages((prev) => [...prev, botMessage]);
+
+  await LlmService.predict(input, (chunk) => {
+    botMessage.text = formatLLMOutput(chunk);
+    setMessages((prev) => [...prev.slice(0, -1), botMessage]);
+  });
+};
 
   return (
     <Container className="flex flex-col h-[calc(100vh-50px)] p-0 w-full-xl overflow-hidden bg-gray-100">
