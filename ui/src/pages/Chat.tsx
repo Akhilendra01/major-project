@@ -8,20 +8,16 @@ function formatLLMOutput(text: string): string {
   if (!text) return ""; // Handle empty input
 
   // Bold **Title** or **Headings**
-  // Bold **Title** or **Headings**
   text = text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
 
   // Italics *text*
   text = text.replace(/\*(.*?)\*/g, "<i>$1</i>");
 
   // Convert markdown-style lists (`- item`) into HTML lists
-
-  // Convert markdown-style lists (`- item`) into HTML lists
   text = text.replace(/^- (.*?)$/gm, "<li>$1</li>");
 
   // Convert Markdown-style headers to HTML headers
   text = text.replace(/(#+) (.*)/g, (_, hashes: string, title: string) => {
-    const level = Math.min(hashes.length, 6); // Ensure max h6
     const level = Math.min(hashes.length, 6); // Ensure max h6
     return `<h${level}>${title}</h${level}>`;
   });
@@ -67,6 +63,7 @@ const sendMessage = async () => {
   setMessages((prev) => [...prev, userMessage]);
   setInput("");
 
+  // eslint-disable-next-line prefer-const
   let botMessage = { text: "", sender: "bot" };
   setMessages((prev) => [...prev, botMessage]);
 
