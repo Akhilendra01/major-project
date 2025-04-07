@@ -8,15 +8,17 @@ import {
   Text,
 } from "@mantine/core";
 import {
-  IconBrandLinkedin,
   IconBriefcase,
+  IconBulb,
   IconMail,
   IconMapPin,
+  IconSchool,
 } from "@tabler/icons-react";
 import { useContext, useEffect, useState } from "react";
 
 import { Auth } from "src/context";
 import ContentService from "src/services/ContentService";
+import {EditProfile} from "src/components/forms/EditProfile";
 import { Profile } from "src/services/ContentService";
 import { useParams } from "react-router";
 
@@ -24,11 +26,13 @@ export function UserProfile() {
   const username = useParams<string>().username;
   const user = useContext(Auth).user;
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [showForm, setShowForm] = useState<boolean>(false);
 
   useEffect(() => {
     ContentService.getProfileByUsername(username)
       .then((response) => {
         setProfile(response);
+        console.log("Profile fetched:", response);
       })
       .catch((error) => {
         console.error("Error fetching profile:", error);
@@ -47,7 +51,7 @@ export function UserProfile() {
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
           <Avatar
             src={profile?.avatar}
-            alt={profile?.name}
+            alt={profile?.imageUrl}
             size={120}
             radius="xl"
           />
@@ -56,14 +60,21 @@ export function UserProfile() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between">
               <div>
                 <Text size="xl" fw={600}>
-                  {profile?.name}
+                  {`${profile?.firstName} ${profile?.lastName}`}
                 </Text>
                 <Text size="sm" c="dimmed">
                   @{profile?.username}
                 </Text>
               </div>
               {user?.username === username && (
-                <Button className="mt-4 sm:mt-0" variant="light" color="blue">
+                <Button
+                  className="mt-4 sm:mt-0"
+                  variant="light"
+                  color="blue"
+                  onClick={() => {
+                    setShowForm(!showForm);
+                  }}
+                >
                   Edit Profile
                 </Button>
               )}
@@ -81,13 +92,16 @@ export function UserProfile() {
                 {profile?.email}
               </Badge>
               <Badge
-                leftSection={<IconBrandLinkedin size={14} />}
+                leftSection={<IconBulb size={14} />}
                 variant="light"
               >
-                {profile?.linkedin}
+                {profile?.branch}
               </Badge>
               <Badge leftSection={<IconBriefcase size={14} />} variant="light">
                 {profile?.designation}
+              </Badge>
+              <Badge leftSection={<IconSchool size={14} />} variant="light">
+                {profile?.batch}
               </Badge>
             </Group>
 
@@ -106,6 +120,7 @@ export function UserProfile() {
           </div>
         </div>
       </Card>
+      {showForm && <EditProfile profile={profile} />}
     </div>
   );
 }

@@ -33,7 +33,7 @@ const profileSchema = mongoose.Schema({
     type: String,
     default: "",
   },
-  linkedin: {
+  branch: {
     type: String,
     default: "",
   },
@@ -48,6 +48,10 @@ const profileSchema = mongoose.Schema({
   lastUpdated: {
     type: Date,
     default: Date.now,
+  },
+  batch: {
+    type: Number,
+    default: "",
   },
 });
 

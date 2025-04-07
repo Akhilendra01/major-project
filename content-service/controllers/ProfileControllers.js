@@ -18,7 +18,7 @@ async function getProfile(req, res) {
       });
     } else {
       await createProfile(req.user.username, req.user.email);
-      profile = await Profile.findOne({$eq: { username: req.user.username} });
+      profile = await Profile.findOne({ username: req.user.username });
     }
   }
 
@@ -32,6 +32,7 @@ async function getProfile(req, res) {
 
 async function updateProfile(req, res) {
   const profile = await Profile.findOne({ username: req.body.username });
+  console.log(profile);
   if (!profile) {
     return res.status(404).send({ status: 404, message: "Profile not found" });
   }

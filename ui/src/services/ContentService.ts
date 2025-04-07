@@ -1,15 +1,18 @@
-import { ApiService } from "./ApiService";
+import { ApiResponse, ApiService } from "./ApiService";
 
 export interface Profile {
-  name: string;
+  firstName: string;
+  lastName: string;
   username: string;
   bio: string;
   location: string;
   email: string;
-  linkedin: string;
+  branch: string;
   designation: string;
   skills: string[];
   avatar: string;
+  imageUrl: string;
+  batch: number;
 }
 
 interface ProfileResponse {
@@ -26,6 +29,10 @@ class ContentService {
       `get-profile/${username}`
     );
     return response.data.profile;
+  }
+
+  static async updateProfile(profile: Profile): Promise<ApiResponse<Profile>> {
+    return await this.apiService.put(`update-profile`, profile);
   }
 }
 
