@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const profileSchema = mongoose.Schema({
   username: {
@@ -33,6 +33,10 @@ const profileSchema = mongoose.Schema({
     type: String,
     default: "",
   },
+  linkedin: {
+    type: String,
+    default: "",
+  },
   skills: {
     type: [String],
     default: [],
@@ -47,4 +51,4 @@ const profileSchema = mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Profile', profileSchema);
+module.exports = mongoose.model("Profile", profileSchema);

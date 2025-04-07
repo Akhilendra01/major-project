@@ -8,29 +8,21 @@ import {
   Text,
 } from "@mantine/core";
 import {
+  IconBrandLinkedin,
   IconBriefcase,
   IconMail,
   IconMapPin,
-  IconPhone,
 } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
+import { Auth } from "src/context";
 import ContentService from "src/services/ContentService";
+import { Profile } from "src/services/ContentService";
 import { useParams } from "react-router";
 
-interface Profile {
-  name: string;
-  username: string;
-  bio: string;
-  location: string;
-  email: string;
-  phone: string;
-  designation: string;
-  skills: string[];
-  avatar: string;
-}
 export function UserProfile() {
   const username = useParams<string>().username;
+  const user = useContext(Auth).user;
   const [profile, setProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
@@ -70,9 +62,11 @@ export function UserProfile() {
                   @{profile?.username}
                 </Text>
               </div>
-              <Button className="mt-4 sm:mt-0" variant="light" color="blue">
-                Edit Profile
-              </Button>
+              {user?.username === username && (
+                <Button className="mt-4 sm:mt-0" variant="light" color="blue">
+                  Edit Profile
+                </Button>
+              )}
             </div>
 
             <Text className="mt-4">{profile?.bio}</Text>
@@ -86,8 +80,11 @@ export function UserProfile() {
               <Badge leftSection={<IconMail size={14} />} variant="light">
                 {profile?.email}
               </Badge>
-              <Badge leftSection={<IconPhone size={14} />} variant="light">
-                {profile?.phone}
+              <Badge
+                leftSection={<IconBrandLinkedin size={14} />}
+                variant="light"
+              >
+                {profile?.linkedin}
               </Badge>
               <Badge leftSection={<IconBriefcase size={14} />} variant="light">
                 {profile?.designation}
