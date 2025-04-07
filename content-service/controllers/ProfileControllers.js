@@ -18,7 +18,7 @@ async function getProfile(req, res) {
       });
     } else {
       await createProfile(req.user.username, req.user.email);
-      profile = await Profile.findOne({ username: req.user.username });
+      profile = await Profile.findOne({$eq: { username: req.user.username} });
     }
   }
 

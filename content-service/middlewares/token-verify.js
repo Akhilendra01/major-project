@@ -16,8 +16,8 @@ async function verifyToken(req, res, next) {
         headers: { Authorization: token },
       }
     );
-    req.user = response.data.user;
-
+    req.user = response.data.data.user;
+    
     next(); 
   } catch (error) {
     return res.status(403).json({
