@@ -1,13 +1,8 @@
-import {
-  Chat,
-  Dashboard,
-  LandingPage,
-  NotFound,
-  Search,
-} from "src/pages";
+import { Chat, Dashboard, LandingPage, NotFound, Search } from "src/pages";
 import { Route, Routes } from "react-router-dom";
 
 import RequiredLogin from "src/components/RequiredLogin";
+import { UserProfile } from "src/pages/UserProfile";
 
 export default function Router() {
   return (
@@ -37,7 +32,14 @@ export default function Router() {
           </RequiredLogin>
         }
       />
-      {/* <Route path="/@/:username" element={<UserProfile />} /> */}
+      <Route
+        path="/@/:username"
+        element={
+          <RequiredLogin>
+            <UserProfile />
+          </RequiredLogin>
+        }
+      />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
