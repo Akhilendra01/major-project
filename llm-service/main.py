@@ -1,69 +1,87 @@
+import logging
+import uuid
 from flask import Flask, request, jsonify, Response
 from llama_cpp import Llama
-import logging
 
-# Configure logging
+# ----------------------- Config -----------------------
+MODEL_PATH = "C:/Users/ankit/Downloads/phi-3-mini-4k-instruct-q4.gguf"
+N_CTX = 4096
+N_THREADS = 8
+N_GPU_LAYERS = -1
+MAX_TOKENS = 512
+TEMPERATURE = 1.0
+TOP_P = 0.95
+REPEAT_PENALTY = 1.1
+STOP_TOKENS = ["<|end|>"]
+
+# -------------------- Logging Setup --------------------
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Path to your Mistral 7B model
-MODEL_PATH = "C:/Users/ankit/Downloads/mistral-7b-v0.1.Q4_K_M.gguf"
-
-# Load the model
-logger.info("Loading Llama model...")
-llm = Llama(model_path=MODEL_PATH, n_ctx=4096, n_threads=8)
-logger.info("Model loaded successfully!")
-
-# Flask app
+# ---------------------- Flask App ----------------------
 app = Flask(__name__)
 
-# Interview Prompt Template
-INTERVIEW_PROMPT = """
-You are an expert AI interview coach specializing in software engineering interviews.
-Your goal is to conduct a mock interview tailored to the user's needs.
+# ------------------- Load Model Once -------------------
+logger.info("Loading Phi-3 Mini model...")
+llm = Llama(
+    model_path=MODEL_PATH,
+    n_ctx=N_CTX,
+    n_threads=N_THREADS,
+    n_gpu_layers=N_GPU_LAYERS
+)
+logger.info("Model loaded successfully.")
 
-### *User's Interview Request:*  
-{prompt}
+# --------------------- Utilities -----------------------
 
-### *Your Task:*  
-⿡ *Understand the User’s Requirements*: Analyze their interview type, experience level, and focus areas.  
-⿢ *Generate a Custom Interview Plan*: Provide relevant coding/system design/behavioral questions.  
-⿣ *Conduct the Interview*: Ask the question step by step, adjusting based on user responses.  
-⿤ *Give Hints & Guidance*: If needed, provide step-by-step hints.  
-⿥ *Evaluate the Response*: Assess correctness, efficiency, clarity, and communication.  
-⿦ *Provide Optimizations*: Suggest alternative solutions or best practices.  
-⿧ *Give Final Feedback*: Highlight strengths, weaknesses, and areas for improvement.  
+def format_prompt(topic: str) -> str:
+    session_id = str(uuid.uuid4())[:8]
+    return (
+        "<|user|>\n"
+        f"Generate 5 different job interview questions without answers about: {topic}. Session: {session_id}\n"
+        "<|end|>\n<|assistant|>"
+    )
 
-💡 *Ensure that your response is interactive, clear, and structured to help the user improve.* 🚀
-"""
+def stream_response(prompt: str):
+    try:
+        for response in llm(
+            prompt,
+            max_tokens=MAX_TOKENS,
+            temperature=TEMPERATURE,
+            top_p=TOP_P,
+            repeat_penalty=REPEAT_PENALTY,
+            stream=True,
+            stop=STOP_TOKENS
+        ):
+            token = response["choices"][0]["text"]
+            yield token
+    except Exception as e:
+        logger.error(f"Error in model generation: {e}")
+        yield "[ERROR] Model generation failed."
 
-@app.route('/')
+# --------------------- Routes --------------------------
+
+@app.route("/", methods=["GET"])
 def home():
-    return "Mistral 7B Interview AI is running!"
+    return "✅ Phi-3 Mini Instruct API is up and running!"
 
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
-        # Validate input
-        data = request.json
+        data = request.get_json()
         if not data or "prompt" not in data:
             return jsonify({"error": "Invalid input. 'prompt' key is required."}), 400
-        
-        user_prompt = data["prompt"]
-        full_prompt = INTERVIEW_PROMPT.format(prompt=user_prompt)
 
-        logger.info(f"Received prompt: {user_prompt}")
+        topic = data["prompt"].strip()
+        logger.info(f"Generating interview questions for topic: '{topic}'")
 
-        # Generate response using Llama model
-        def generate():
-            for response in llm(full_prompt, max_tokens=500, temperature=1.2, stream=True):
-                yield response["choices"][0]["text"]
-
-        return Response(generate(), content_type="text/plain")
+        full_prompt = format_prompt(topic)
+        return Response(stream_response(full_prompt), content_type="text/plain")
 
     except Exception as e:
-        logger.error(f"Error during prediction: {e}")
-        return jsonify({"error": "An error occurred during prediction."}), 500
+        logger.exception("Unexpected error during prediction.")
+        return jsonify({"error": "An internal server error occurred."}), 500
+
+# ------------------- App Entry Point -------------------
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=False)
