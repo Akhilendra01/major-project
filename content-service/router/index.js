@@ -26,6 +26,6 @@ router.get("/constants", getConstants);
 router.post("/create-article", createArticle);
 router.get("/get-articles", getArticles);
 router.get("/get-profile/:username", getProfile);
-router.post("/update-profile", updateProfile);
+router.put("/update-profile", updateProfile);
 
 module.exports = router;
