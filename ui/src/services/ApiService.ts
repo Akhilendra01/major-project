@@ -19,21 +19,23 @@ export class ApiService {
     headers: Record<string, string> = {}
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseURL}/${endpoint}`;
+    const token = localStorage.getItem("token");
 
-    const token=localStorage.getItem("token");
+    const isFormData = body instanceof FormData;
 
     const config: RequestInit = {
       method,
       headers: {
-        "Content-Type": "application/json",
-        ...(token && {"Authorization": `Bearer ${token}`}),
+        ...(token && { Authorization: `Bearer ${token}` }),
+        ...(isFormData ? {} : { "Content-Type": "application/json" }),
         ...headers,
       },
+      ...(body
+        ? {
+            body: isFormData ? (body as FormData) : JSON.stringify(body),
+          }
+        : {}),
     };
-
-    if (body) {
-      config.body = JSON.stringify(body);
-    }
 
     try {
       const response = await fetch(url, config);
@@ -49,7 +51,7 @@ export class ApiService {
       throw error;
     }
   }
-
+  
   get<T>(endpoint: string, headers?: Record<string, string>) {
     return this.request<T>(endpoint, "GET", undefined, headers);
   }

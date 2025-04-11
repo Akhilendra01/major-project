@@ -2,6 +2,12 @@ const express = require("express");
 
 const router = express.Router();
 
+const multer=require("multer");
+const { storage } = require("../cloudinary/index.js");
+const upload = multer({ storage: storage });
+
+
+
 const {
   createPost,
   deletePost,
@@ -17,6 +23,7 @@ const {
 const {
   getProfile,
   updateProfile,
+  updateAvatar,
 } = require("../controllers/ProfileControllers");
 
 router.post("/create-post", createPost);
@@ -27,5 +34,6 @@ router.post("/create-article", createArticle);
 router.get("/get-articles", getArticles);
 router.get("/get-profile/:username", getProfile);
 router.put("/update-profile", updateProfile);
+router.post("/update-avatar", upload.single("avatar"), updateAvatar);
 
 module.exports = router;

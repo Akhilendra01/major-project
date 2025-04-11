@@ -1,3 +1,4 @@
+const { deleteImage } = require("../cloudinary");
 const Profile = require("../models/Profile");
 
 async function createProfile(username, email) {
@@ -70,7 +71,26 @@ async function updateProfile(req, res) {
   });
 }
 
+async function updateAvatar(req, res) {
+  if(req.body.oldImgUrl){
+    deleteImage(req.body.oldImgUrl);
+  }
+  await Profile.findByIdAndUpdate(
+    req.body.id,
+    { $set: { imgUrl: req.file.path } },
+    { new: true }
+  );
+  res.status(200).send({
+    status: 200,
+    data: {
+      imageUrl: req.file.path,
+      message: "Image received",
+    },
+  });
+}
+
 module.exports = {
   getProfile,
   updateProfile,
+  updateAvatar,
 };

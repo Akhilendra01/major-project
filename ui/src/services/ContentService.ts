@@ -1,6 +1,7 @@
 import { ApiResponse, ApiService } from "./ApiService";
 
 export interface Profile {
+  _id: string;
   firstName: string;
   lastName: string;
   username: string;
@@ -11,7 +12,7 @@ export interface Profile {
   designation: string;
   skills: string[];
   avatar: string;
-  imageUrl: string;
+  imgUrl: string;
   batch: number;
 }
 
@@ -33,6 +34,17 @@ class ContentService {
 
   static async updateProfile(profile: Profile): Promise<ApiResponse<Profile>> {
     return await this.apiService.put(`update-profile`, profile);
+  }
+  static async uploadProfileImage(
+    formData: FormData,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // onUploadProgress?: (progressEvent: ProgressEvent) => void
+  ): Promise<{ imageUrl: string }> {
+    const response= await this.apiService.post<{ imageUrl: string }>(
+      `update-avatar`,
+      formData,
+    );
+    return {imageUrl: response.data.imageUrl};
   }
 }
 

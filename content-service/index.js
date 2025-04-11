@@ -6,6 +6,7 @@ const cors= require("cors");
 const router = require("./router");
 const db = require("./db");
 const verifyToken = require("./middlewares/token-verify");
+const {storage}=require("./cloudinary");
 
 const app = express();
 
