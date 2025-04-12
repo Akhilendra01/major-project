@@ -10,7 +10,8 @@ async function ValidateToken(req, res) {
         user:{
           id: ok.id,
           username: ok.username,
-          email: ok.email
+          email: ok.email,
+          isAdmin: ok.isAdmin,
         }
       }
     });

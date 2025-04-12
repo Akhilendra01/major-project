@@ -31,6 +31,7 @@ async function LoginController(req, res) {
       id: user._id,
       username: user.username,
       email: user.email,
+      isAdmin: user.isAdmin,
     },
     process.env.ACCESS_TOKEN_SECRET
   );
