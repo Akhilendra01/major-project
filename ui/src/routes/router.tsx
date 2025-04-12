@@ -1,4 +1,4 @@
-import { Chat, Dashboard, LandingPage, NotFound, Search } from "src/pages";
+import { Chat, Dashboard } from "src/pages";
 import { Route, Routes } from "react-router-dom";
 
 import { Loader } from "@mantine/core";
@@ -6,6 +6,9 @@ import React from "react";
 import RequiredLogin from "src/components/RequiredLogin";
 
 const UserProfile = React.lazy(() => import("src/pages/UserProfile"));
+const LandingPage = React.lazy(() => import("src/pages/LandingPage"));
+const Search = React.lazy(() => import("src/pages/Search"));
+const NotFound = React.lazy(() => import("src/pages/NotFound"));
 
 export default function Router() {
   return (

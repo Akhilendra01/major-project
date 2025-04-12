@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ConstantsService from "src/services/ConstantsService";
 import { useMediaQuery } from "@mantine/hooks";
 
-export function Search() {
+export default function Search() {
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   const [org, setOrg] = useState<string | null>("");

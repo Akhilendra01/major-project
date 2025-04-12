@@ -1,11 +1,11 @@
-import { BackgroundImage, Box, Button, Modal, Title } from "@mantine/core";
+import { Box, Button, Modal, Title } from "@mantine/core";
 import { LoginForm, SignupForm } from "src/components/forms";
 import { useContext, useState } from "react";
 
 import { Auth } from "src/context";
 import { useNavigate } from "react-router";
 
-export function LandingPage() {
+export default function LandingPage() {
   const navigate=useNavigate();
   const {isLoggedIn}=useContext(Auth);
   const [loginOpen, setLoginOpen] = useState(false);
