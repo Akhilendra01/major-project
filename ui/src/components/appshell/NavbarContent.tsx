@@ -38,7 +38,7 @@ export default function NavbarContent() {
       <Navbar>
         {links.map(
           (link) =>
-            user.isAdmin === link.admin && (
+            (user.isAdmin === link.admin || user.isAdmin) && (
               <Navlink key={link.label}>
                 <Button
                   size="md"
