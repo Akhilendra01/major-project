@@ -1,5 +1,5 @@
 import { AuthProps, Credentials, User } from "src/interfaces";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 
 import AuthService from "src/services/AuthService";
 import { notifications } from "@mantine/notifications";
@@ -29,7 +29,14 @@ export default function AuthProvider({
     if (res.status === 200) {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("username", res.data.user.username);
-      setUser(res.data.user);
+      if ("isAdmin" in res.data.user) {
+        setUser(res.data.user);
+      } else {
+        setUser({
+          ...res.data.user,
+          isAdmin: false,
+        });
+      }
       setIsLoggedIn(true);
       localStorage.setItem("lastlogin", JSON.stringify(Date.now()));
       notifications.show({

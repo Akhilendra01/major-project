@@ -32,7 +32,7 @@ import { useParams } from "react-router";
 
 export default function UserProfile() {
   const username = useParams<string>().username;
-  const user = useContext(Auth).user;
+  const { user } = useContext(Auth);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [showForm, setShowForm] = useState<boolean>(false);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
@@ -43,7 +43,6 @@ export default function UserProfile() {
     ContentService.getProfileByUsername(username)
       .then((response) => {
         setProfile(response);
-        console.log("Profile fetched:", response);
       })
       .catch((error) => {
         console.error("Error fetching profile:", error);
@@ -65,7 +64,7 @@ export default function UserProfile() {
       formData.append("avatar", file);
       formData.append("id", profile?._id || "");
       formData.append("oldImgUrl", profile?.imgUrl || "");
-      
+
       // Simulate progress
       const interval = setInterval(() => {
         setUploadProgress((prev) => {
