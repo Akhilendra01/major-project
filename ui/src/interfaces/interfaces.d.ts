@@ -36,3 +36,15 @@ export type User=Record<string, any>;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type SetUser=Dispatch<SetStateAction<Record<string, any>>>
 export type SetProfileData=Dispatch<SetStateAction<UserData>>
+
+
+export interface CreatePostRequest {
+  title: string | "";
+  content: string | "";
+  tags: string[];
+  images: File[] | null | undefined;
+}
+
+export interface EmptyResponse{
+  message: string;
+}

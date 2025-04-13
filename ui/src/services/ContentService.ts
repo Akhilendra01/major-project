@@ -1,4 +1,5 @@
 import { ApiResponse, ApiService } from "./ApiService";
+import { CreatePostRequest, EmptyResponse } from "src/interfaces";
 
 export interface Profile {
   _id: string;
@@ -36,15 +37,33 @@ class ContentService {
     return await this.apiService.put(`update-profile`, profile);
   }
   static async uploadProfileImage(
-    formData: FormData,
+    formData: FormData
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     // onUploadProgress?: (progressEvent: ProgressEvent) => void
   ): Promise<{ imageUrl: string }> {
-    const response= await this.apiService.post<{ imageUrl: string }>(
+    const response = await this.apiService.post<{ imageUrl: string }>(
       `update-avatar`,
-      formData,
+      formData
     );
-    return {imageUrl: response.data.imageUrl};
+    return { imageUrl: response.data.imageUrl };
+  }
+
+  static async createPost(
+    postValues: CreatePostRequest
+  ): Promise<ApiResponse<EmptyResponse>> {
+    const formData = new FormData();
+    formData.append("title", postValues.title);
+    formData.append("content", postValues.content);
+    formData.append("tags", JSON.stringify(postValues.tags));
+    if (postValues.images) {
+      for (let i = 0; i < postValues.images.length; i++) {
+        formData.append("images", postValues.images[i]);
+      }
+    }
+    return await this.apiService.post<EmptyResponse>(
+      `create-post`,
+      formData
+    );
   }
 }
 

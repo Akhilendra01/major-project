@@ -1,16 +1,19 @@
 const Post = require("../models/Post");
 
 async function createPost(req, res) {
+  // console.log('hi')
   const user = req.user;
   const post = new Post({
     author: user.username,
     title: req.body.title,
     content: req.body.content,
+    images: req.files.map((file) => file.path),
+    tags: req.body.tags,
   });
 
   await post.save();
 
-  res.send({
+  res.status(201).send({
     status: 201,
     message: "Post created successfully",
   });

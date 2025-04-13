@@ -12,22 +12,17 @@ import {
 } from "@mantine/core";
 import { IconPhoto, IconUpload, IconX } from "@tabler/icons-react";
 
+import ContentService from "src/services/ContentService";
+import { CreatePostRequest } from "src/interfaces";
 import { Dropzone } from "@mantine/dropzone";
 import { useForm } from "@mantine/form";
 import { useMediaQuery } from "@mantine/hooks";
 import { useState } from "react";
 
-interface CreatePostValues {
-  title: string | "";
-  content: string | "";
-  tags: string[];
-  images: File[] | null | undefined;
-}
-
 function CreatePost() {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [loading, setLoading] = useState(false);
-  const form = useForm<CreatePostValues>({
+  const form = useForm<CreatePostRequest>({
     initialValues: {
       title: "",
       content: "",
@@ -54,6 +49,18 @@ function CreatePost() {
     );
   };
 
+  const handleSubmit = async (values: CreatePostRequest) => {
+    setLoading(true);
+    await ContentService.createPost(values)
+      .then((response) => {
+        form.reset();
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error creating post", error);
+      });
+  };
+
   return (
     <Card
       shadow="sm"
@@ -66,15 +73,14 @@ function CreatePost() {
         Create New Post
       </Title>
       <form
-        onSubmit={form.onSubmit((values) => {
-          console.log("submitted!!!!", values);
-        })}
+        onSubmit={form.onSubmit(handleSubmit)}
         className="space-y-4"
       >
         <TextInput
           label="Title"
           placeholder="Enter post title"
           {...form.getInputProps("title")}
+          required
         />
 
         <Textarea
@@ -82,6 +88,7 @@ function CreatePost() {
           minRows={5}
           placeholder="Your content goes here...."
           {...form.getInputProps("content")}
+          required
         />
 
         <div>

@@ -15,7 +15,15 @@ const postSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-
+  images:{
+    type: [String],
+    default: []
+  },
+  tags:{
+    type: [String],
+    default: [] 
+  },
+  
   timestamp: {
     type: Date,
     default: Date.now

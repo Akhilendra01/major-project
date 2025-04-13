@@ -26,7 +26,7 @@ const {
   updateAvatar,
 } = require("../controllers/ProfileControllers");
 
-router.post("/create-post", createPost);
+router.post("/create-post", upload.array("images"),createPost);
 router.get("/get-post", getPost);
 router.delete("/delete-post", deletePost);
 router.get("/constants", getConstants);
