@@ -48,3 +48,23 @@ export interface CreatePostRequest {
 export interface EmptyResponse{
   message: string;
 }
+
+export interface Profile {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  bio: string;
+  location: string;
+  email: string;
+  branch: string;
+  designation: string;
+  skills: string[];
+  avatar: string;
+  imgUrl: string;
+  batch: number;
+}
+
+interface ProfileResponse {
+  profile: Profile;
+}

@@ -27,7 +27,7 @@ import { useContext, useEffect, useState } from "react";
 import { Auth } from "src/context";
 import ContentService from "src/services/ContentService";
 import { EditProfile } from "src/components/forms/EditProfile";
-import { Profile } from "src/services/ContentService";
+import { Profile } from "src/interfaces";
 import { useParams } from "react-router";
 
 export default function UserProfile() {

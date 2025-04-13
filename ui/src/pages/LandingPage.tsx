@@ -1,4 +1,4 @@
-import { Box, Button, Modal, Title } from "@mantine/core";
+import { AnimatePresence, motion } from "framer-motion";
 import { LoginForm, SignupForm } from "src/components/forms";
 import { useContext, useState } from "react";
 
@@ -6,64 +6,78 @@ import { Auth } from "src/context";
 import { useNavigate } from "react-router";
 
 export default function LandingPage() {
-  const navigate=useNavigate();
-  const {isLoggedIn}=useContext(Auth);
-  const [loginOpen, setLoginOpen] = useState(false);
-  const [signupOpen, setSignupOpen] = useState(false);
-  if(isLoggedIn){
-    navigate('/dashboard');
-    return <></>
-  }
-  return (
-    <>
-      {/* <BackgroundImage
-        src={Image}
-        radius="sm"
-        className="w-full h-full p-0 m-0"
-      > */}
-        <Box className="flex flex-col items-center py-40">
-          <Title order={3} align="center" sx={{ color: "gray" }}>
-            Login to continue to the portal
-          </Title>
-          <Box>
-            <Button className="m-6" onClick={() => setLoginOpen(!loginOpen)}>
-              Login
-            </Button>
-            <Button className="m-6" onClick={() => setSignupOpen(!signupOpen)}>
-              Sign Up
-            </Button>
-          </Box>
-        </Box>
-      {/* </BackgroundImage> */}
+  const navigate = useNavigate();
+  const { isLoggedIn } = useContext(Auth);
+  const [showForm, setShowForm] = useState<"login" | "signup" | null>(null);
 
-      <Modal
-        opened={loginOpen}
-        onClose={() => setLoginOpen(!loginOpen)}
-        fullScreen
+  if (isLoggedIn) {
+    navigate("/dashboard");
+    return null;
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-white px-4">
+      <motion.div
+        className="max-w-xl text-center"
+        initial={{ opacity: 0, y: -40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
       >
-        <Box className="flex flex-col m-auto items-center justify-center py-20 w-3/4">
-          <Title order={3} className="py-6">
-            Login To Continue
-          </Title>
-          <LoginForm />
-        </Box>
-      </Modal>
-      <Modal
-        opened={signupOpen}
-        onClose={() => setSignupOpen(!signupOpen)}
-        fullScreen
-      >
-        <Box className="flex flex-col m-auto w-3/4 items-center justify-center">
-          <Title order={3} className="py-6">
-            Signup To Continue
-          </Title>
-          <SignupForm
-            close={() => {
-              setSignupOpen(false);
-            }}
-          />
-        </Box>
-      </Modal>
-    </>
+        <h1 className="text-4xl sm:text-5xl font-bold mb-6">
+          Welcome to Campus Portal
+        </h1>
+        <p className="text-lg sm:text-xl text-gray-600 mb-10">
+          Connect, share, and prepare for your future — all in one place.
+        </p>
+        <div className="flex justify-center gap-4 mb-10">
+          <button
+            onClick={() => setShowForm("login")}
+            className={`${
+              showForm === "login" ? "bg-blue-700" : "bg-blue-600"
+            } hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-full transition`}
+          >
+            Login
+          </button>
+          <button
+            onClick={() => setShowForm("signup")}
+            className={`${
+              showForm === "signup" ? "bg-blue-100" : "bg-white"
+            } border border-blue-600 text-blue-600 hover:bg-blue-50 font-semibold px-6 py-3 rounded-full transition`}
+          >
+            Sign Up
+          </button>
+        </div>
+      </motion.div>
+
+      <AnimatePresence mode="wait">
+        {showForm && (
+          <motion.div
+            key={showForm}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ type: "spring", stiffness: 200, damping: 20 }}
+            className="w-full max-w-md bg-white shadow-xl rounded-xl p-6"
+          >
+            {showForm === "login" && (
+              <>
+                <h2 className="text-2xl font-semibold text-center mb-6">
+                  Login to Continue
+                </h2>
+                <LoginForm />
+              </>
+            )}
+            {showForm === "signup" && (
+              <>
+                <h2 className="text-2xl font-semibold text-center mb-6">
+                  Sign Up to Join
+                </h2>
+                <SignupForm close={() => setShowForm(null)} />
+              </>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }

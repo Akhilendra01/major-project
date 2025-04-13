@@ -2,11 +2,13 @@ const express = require("express");
 
 const router = express.Router();
 
-const multer=require("multer");
-const { storage } = require("../cloudinary/index.js");
-const upload = multer({ storage: storage });
-
-
+const multer = require("multer");
+const {
+  profilePhotoStorage,
+  postsPhotoStorage,
+} = require("../cloudinary/index.js");
+const profilePhotoUpload = multer({ storage: profilePhotoStorage });
+const postsPhotoUpload = multer({ storage: postsPhotoStorage });
 
 const {
   createPost,
@@ -26,7 +28,7 @@ const {
   updateAvatar,
 } = require("../controllers/ProfileControllers");
 
-router.post("/create-post", upload.array("images"),createPost);
+router.post("/create-post", postsPhotoUpload.array("images"), createPost);
 router.get("/get-post", getPost);
 router.delete("/delete-post", deletePost);
 router.get("/constants", getConstants);
@@ -34,6 +36,10 @@ router.post("/create-article", createArticle);
 router.get("/get-articles", getArticles);
 router.get("/get-profile/:username", getProfile);
 router.put("/update-profile", updateProfile);
-router.post("/update-avatar", upload.single("avatar"), updateAvatar);
+router.post(
+  "/update-avatar",
+  profilePhotoUpload.single("avatar"),
+  updateAvatar
+);
 
 module.exports = router;

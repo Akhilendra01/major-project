@@ -1,25 +1,6 @@
 import { ApiResponse, ApiService } from "./ApiService";
-import { CreatePostRequest, EmptyResponse } from "src/interfaces";
+import { CreatePostRequest, EmptyResponse, Profile, ProfileResponse } from "src/interfaces";
 
-export interface Profile {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  username: string;
-  bio: string;
-  location: string;
-  email: string;
-  branch: string;
-  designation: string;
-  skills: string[];
-  avatar: string;
-  imgUrl: string;
-  batch: number;
-}
-
-interface ProfileResponse {
-  profile: Profile;
-}
 class ContentService {
   static apiService = new ApiService(import.meta.env.VITE_BASE_CONTENT);
 

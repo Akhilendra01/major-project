@@ -25,6 +25,7 @@
     "blog-ui": "file:",
     "dayjs": "^1.11.8",
     "dotenv": "^16.3.1",
+    "framer-motion": "^12.6.5",
     "lucide-react": "^0.475.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

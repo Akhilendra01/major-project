@@ -9,10 +9,18 @@ v2.config({
 
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
-const storage = new CloudinaryStorage({
+const profilePhotoStorage = new CloudinaryStorage({
   cloudinary: v2,
   params: {
     folder: "profile-photos",
+    allowed_formats: ["jpg", "png", "jpeg"],
+  },
+});
+
+const postsPhotoStorage = new CloudinaryStorage({
+  cloudinary: v2,
+  params: {
+    folder: "posts-photos",
     allowed_formats: ["jpg", "png", "jpeg"],
   },
 });
@@ -35,6 +43,7 @@ async function deleteImage(imageUrl) {
 }
 
 module.exports = {
-  storage,
+  profilePhotoStorage,
+  postsPhotoStorage,
   deleteImage,
 };

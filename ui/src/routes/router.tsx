@@ -10,6 +10,7 @@ const LandingPage = React.lazy(() => import("src/pages/LandingPage"));
 const Search = React.lazy(() => import("src/pages/Search"));
 const NotFound = React.lazy(() => import("src/pages/NotFound"));
 const AdminAction = React.lazy(() => import("src/pages/AdminAction"));
+const Feed = React.lazy(() => import("src/pages/Feed"));
 
 export default function Router() {
   return (
@@ -58,7 +59,15 @@ export default function Router() {
           path="/admin-actions"
           element={
             <RequiredLogin>
-              <AdminAction/>
+              <AdminAction />
+            </RequiredLogin>
+          }
+        />
+        <Route
+          path="/feed"
+          element={
+            <RequiredLogin>
+              <Feed />
             </RequiredLogin>
           }
         />
