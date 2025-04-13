@@ -9,6 +9,7 @@ const UserProfile = React.lazy(() => import("src/pages/UserProfile"));
 const LandingPage = React.lazy(() => import("src/pages/LandingPage"));
 const Search = React.lazy(() => import("src/pages/Search"));
 const NotFound = React.lazy(() => import("src/pages/NotFound"));
+const AdminAction = React.lazy(() => import("src/pages/AdminAction"));
 
 export default function Router() {
   return (
@@ -50,6 +51,14 @@ export default function Router() {
           element={
             <RequiredLogin>
               <UserProfile />
+            </RequiredLogin>
+          }
+        />
+        <Route
+          path="/admin-actions"
+          element={
+            <RequiredLogin>
+              <AdminAction/>
             </RequiredLogin>
           }
         />
