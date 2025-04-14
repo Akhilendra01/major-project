@@ -39,8 +39,19 @@ async function getArticleForFeed(req, res) {
   }
 }
 
+async function getTrendingTags(req, res) {
+  const response = await Article.aggregate([
+    { $unwind: "$tags" },
+    { $group: { _id: "$tags", count: { $sum: 1 } } },
+    { $sort: { count: -1 } },
+    { $limit: 5 },
+  ]);
+  res.status(200).send({ data: response.map((tags) => tags._id) });
+}
+
 module.exports = {
   createArticle,
   getArticles,
   getArticleForFeed,
+  getTrendingTags,
 };

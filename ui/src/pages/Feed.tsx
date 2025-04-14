@@ -1,6 +1,13 @@
 import {
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  Group,
   Loader,
+  Stack,
   Text,
+  Title,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 
@@ -13,17 +20,18 @@ import { useMediaQuery } from "@mantine/hooks";
 
 function Feed() {
   const isMobile = useMediaQuery("(max-width: 768px)");
+
   const [articles, setArticles] = useState<ArticleObject[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [tags, setTags] = useState<string[]>([]);
 
   const fetchArticles = async (pageNum: number) => {
     setIsLoading(true);
     try {
       const response = await ContentService.getArticlesForFeed(pageNum);
-      console.log("API Response:", response); // Debug
       return Array.isArray(response) ? response : [];
     } catch (err) {
       setError("Failed to load articles");
@@ -42,19 +50,29 @@ function Feed() {
     setPage((prev) => prev + 1);
   };
 
+  const loadTrendingTags = async () => {
+    setTags((await ContentService.getTrendingTags()).data);
+  };
+
   useEffect(() => {
-    loadMoreArticles(); // Initial load
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    loadMoreArticles();
+    loadTrendingTags();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const mockPeopleToFollow = [
+    { name: "Anjali Verma", username: "@anjalidev", avatar: "" },
+    { name: "Rohan Mehta", username: "@rohan_codes", avatar: "" },
+    { name: "Sanya Rao", username: "@sanyarao", avatar: "" },
+  ];
 
   return (
     <div className="flex w-full justify-center px-4 py-6 gap-6">
-      <div className={`${isMobile ? "w-full" : "w-7/12"} space-y-6`}>
+      {/* Center Feed */}
+      <div className={`${isMobile ? "w-full" : "w-[600px]"} space-y-6`}>
         <CreateArticleBox setArticles={setArticles} />
-
         {error && <Text color="red">{error}</Text>}
 
-        {/* Or with InfiniteScroll */}
         <InfiniteScroll
           dataLength={articles.length}
           next={loadMoreArticles}
@@ -68,8 +86,49 @@ function Feed() {
         </InfiniteScroll>
       </div>
 
+      {/* Right Sidebar */}
       {!isMobile && (
-        <div className="w-3/12 space-y-6">{/* Sidebar content */}</div>
+        <div className="w-[300px] space-y-6 hidden md:block">
+          {/* Trending */}
+          <Card shadow="sm" p="md" radius="md" withBorder>
+            <Title order={4}>Trending</Title>
+            {tags.map((tag) => (
+              <Badge
+                key={tag}
+                size="sm"
+                color="blue"
+                className="cursor-pointer hover:underline"
+              >
+                {tag}
+              </Badge>
+            ))}
+          </Card>
+
+          {/* Who to follow */}
+          <Card shadow="sm" p="md" radius="md" withBorder>
+            <Title order={4}>Who to follow</Title>
+            <Stack spacing="md" mt="md">
+              {mockPeopleToFollow.map((person, idx) => (
+                <Group key={idx} position="apart">
+                  <Group>
+                    <Avatar radius="xl" size="sm" src={person.avatar} />
+                    <div>
+                      <Text size="sm" weight={500}>
+                        {person.name}
+                      </Text>
+                      <Text size="xs" color="dimmed">
+                        {person.username}
+                      </Text>
+                    </div>
+                  </Group>
+                  <Button size="xs" variant="light">
+                    Follow
+                  </Button>
+                </Group>
+              ))}
+            </Stack>
+          </Card>
+        </div>
       )}
     </div>
   );

@@ -76,6 +76,10 @@ class ContentService {
   ): Promise<ApiResponse<Article[]>> {
     return await this.apiService.get<Article[]>(`feed?page=${page}`);
   }
+
+  static async getTrendingTags(): Promise<ApiResponse<string[]>> {
+    return (await this.apiService.get<string[]>(`get-trending-tags`));
+  }
 }
 
 export default ContentService;

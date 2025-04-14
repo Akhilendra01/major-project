@@ -22,6 +22,7 @@ const {
   createArticle,
   getArticles,
   getArticleForFeed,
+  getTrendingTags,
 } = require("../controllers/ArticleControllers");
 const {
   getProfile,
@@ -47,4 +48,5 @@ router.post(
   updateAvatar
 );
 router.get("/feed", getArticleForFeed);
+router.get("/get-trending-tags", getTrendingTags);
 module.exports = router;
