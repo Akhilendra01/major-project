@@ -53,6 +53,7 @@ function CreatePost() {
     setLoading(true);
     await ContentService.createPost(values)
       .then((response) => {
+        console.log(response);
         form.reset();
         setLoading(false);
       })
