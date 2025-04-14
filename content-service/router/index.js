@@ -21,6 +21,7 @@ const { getConstants } = require("../controllers/ConstantControllers");
 const {
   createArticle,
   getArticles,
+  getArticleForFeed,
 } = require("../controllers/ArticleControllers");
 const {
   getProfile,
@@ -32,7 +33,11 @@ router.post("/create-post", postsPhotoUpload.array("images", 3), createPost);
 router.get("/get-post", getPost);
 router.delete("/delete-post", deletePost);
 router.get("/constants", getConstants);
-router.post("/create-article", postsPhotoUpload.array("images", 3), createArticle);
+router.post(
+  "/create-article",
+  postsPhotoUpload.array("images", 3),
+  createArticle
+);
 router.get("/get-articles", getArticles);
 router.get("/get-profile/:username", getProfile);
 router.put("/update-profile", updateProfile);
@@ -41,5 +46,5 @@ router.post(
   profilePhotoUpload.single("avatar"),
   updateAvatar
 );
-
+router.get("/feed", getArticleForFeed);
 module.exports = router;

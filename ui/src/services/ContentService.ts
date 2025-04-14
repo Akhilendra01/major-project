@@ -68,10 +68,13 @@ class ContentService {
         formData.append("images", createPostRequest.images[i]);
       }
     }
-    return await this.apiService.post<Article>(
-      `create-article`,
-      formData
-    );
+    return await this.apiService.post<Article>(`create-article`, formData);
+  }
+
+  static async getArticlesForFeed(
+    page: number
+  ): Promise<ApiResponse<Article[]>> {
+    return await this.apiService.get<Article[]>(`feed?page=${page}`);
   }
 }
 
