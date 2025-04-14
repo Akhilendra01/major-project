@@ -1,5 +1,5 @@
 import { ApiResponse, ApiService } from "./ApiService";
-import { CreatePostRequest, EmptyResponse, Profile, ProfileResponse } from "src/interfaces";
+import { CreatePostRequest, EmptyResponse, Profile, ProfileFormValues, ProfileResponse } from "src/interfaces";
 
 class ContentService {
   static apiService = new ApiService(import.meta.env.VITE_BASE_CONTENT);
@@ -14,7 +14,7 @@ class ContentService {
     return response.data.profile;
   }
 
-  static async updateProfile(profile: Profile): Promise<ApiResponse<Profile>> {
+  static async updateProfile(profile: ProfileFormValues): Promise<ApiResponse<Profile>> {
     return await this.apiService.put(`update-profile`, profile);
   }
   static async uploadProfileImage(

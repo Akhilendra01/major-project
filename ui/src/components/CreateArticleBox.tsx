@@ -5,9 +5,9 @@ import {
   CloseButton,
   Group,
   Image,
+  Text,
   TextInput,
   Textarea,
-  Title,
   Tooltip,
 } from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
@@ -62,9 +62,9 @@ function CreateArticleBox() {
 
   return (
     <Card shadow="sm" padding="lg" radius="lg" withBorder className="bg-white">
-      <Title order={4} className="mb-4">
-        Create Post
-      </Title>
+      <Text className="mb-4 text-gray-500">
+        Share you experiences ....
+      </Text>
 
       <div className="space-y-4">
         <TextInput
@@ -112,9 +112,7 @@ function CreateArticleBox() {
           multiple
           className="hidden"
           children={undefined}
-        >
-          {/* No visible UI here */}
-        </Dropzone>
+        />
 
         <Group position="right">
           <Tooltip label="Attach Images">

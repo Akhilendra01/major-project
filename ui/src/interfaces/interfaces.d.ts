@@ -68,3 +68,15 @@ export interface Profile {
 interface ProfileResponse {
   profile: Profile;
 }
+
+export interface ProfileFormValues {
+  username: string | "";
+  firstName: string | "";
+  lastName: string | "";
+  bio: string | "";
+  location: string | "";
+  designation: string | "";
+  skills: string[];
+  batch: number | null;
+  branch: string | "";
+}

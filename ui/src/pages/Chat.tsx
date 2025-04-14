@@ -50,10 +50,12 @@ export function Chat() {
     { text: "Hello! How can I help you today?", sender: "bot" },
   ]);
   const [input, setInput] = useState("");
-  const messagesEndRef = useRef(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
 
 const sendMessage = async () => {

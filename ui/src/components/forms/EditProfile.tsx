@@ -6,23 +6,12 @@ import {
   Textarea,
   Title,
 } from "@mantine/core";
-import ContentService, { Profile } from "src/services/ContentService";
+import { Profile, ProfileFormValues } from "src/interfaces";
 
+import ContentService from "src/services/ContentService";
 import { useForm } from "@mantine/form";
 import { useParams } from "react-router";
 import { useState } from "react";
-
-interface ProfileFormValues {
-  username: string | "";
-  firstName: string | "";
-  lastName: string | "";
-  bio: string | "";
-  location: string | "";
-  designation: string | "";
-  skills: string[];
-  batch: number | null;
-  branch: string | "";
-}
 
 const skillOptions = [
   "React",
