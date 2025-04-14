@@ -6,6 +6,7 @@ import {
   Profile,
   ProfileFormValues,
   ProfileResponse,
+  UserBadge,
 } from "src/interfaces";
 
 import { ApiService } from "./ApiService";
@@ -78,7 +79,10 @@ class ContentService {
   }
 
   static async getTrendingTags(): Promise<ApiResponse<string[]>> {
-    return (await this.apiService.get<string[]>(`get-trending-tags`));
+    return await this.apiService.get<string[]>(`get-trending-tags`);
+  }
+  static async getFollowRecommendations(): Promise<ApiResponse<UserBadge[]>> {
+    return await this.apiService.get<UserBadge[]>(`get-follow-recommendations`);
   }
 }
 

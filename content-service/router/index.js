@@ -28,6 +28,7 @@ const {
   getProfile,
   updateProfile,
   updateAvatar,
+  getFollowRecommendation,
 } = require("../controllers/ProfileControllers");
 
 router.post("/create-post", postsPhotoUpload.array("images", 3), createPost);
@@ -49,4 +50,5 @@ router.post(
 );
 router.get("/feed", getArticleForFeed);
 router.get("/get-trending-tags", getTrendingTags);
+router.get("/get-follow-recommendations", getFollowRecommendation);
 module.exports = router;

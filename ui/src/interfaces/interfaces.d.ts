@@ -107,3 +107,10 @@ export interface ApiResponse<T> {
   status: number;
   error?: string;
 }
+
+export interface UserBadge{
+  image: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+}

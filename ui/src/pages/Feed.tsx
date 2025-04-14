@@ -1,3 +1,4 @@
+import { Article as ArticleObject, UserBadge } from "src/interfaces";
 import {
   Avatar,
   Badge,
@@ -12,7 +13,6 @@ import {
 import { useEffect, useState } from "react";
 
 import Article from "src/components/Article";
-import { Article as ArticleObject } from "src/interfaces";
 import ContentService from "src/services/ContentService";
 import CreateArticleBox from "src/components/CreateArticleBox";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -27,6 +27,7 @@ function Feed() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>([]);
+  const [followRecommend, setFollowRecommend] = useState<UserBadge[]>([]);
 
   const fetchArticles = async (pageNum: number) => {
     setIsLoading(true);
@@ -54,17 +55,16 @@ function Feed() {
     setTags((await ContentService.getTrendingTags()).data);
   };
 
+  const loadFollowRecommend = async () => {
+    setFollowRecommend((await ContentService.getFollowRecommendations()).data);
+  };
+
   useEffect(() => {
     loadMoreArticles();
     loadTrendingTags();
+    loadFollowRecommend();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const mockPeopleToFollow = [
-    { name: "Anjali Verma", username: "@anjalidev", avatar: "" },
-    { name: "Rohan Mehta", username: "@rohan_codes", avatar: "" },
-    { name: "Sanya Rao", username: "@sanyarao", avatar: "" },
-  ];
 
   return (
     <div className="flex w-full justify-center px-4 py-6 gap-6">
@@ -108,13 +108,13 @@ function Feed() {
           <Card shadow="sm" p="md" radius="md" withBorder>
             <Title order={4}>Who to follow</Title>
             <Stack spacing="md" mt="md">
-              {mockPeopleToFollow.map((person, idx) => (
-                <Group key={idx} position="apart">
+              {followRecommend.map((person) => (
+                <Group key={person.username} position="apart">
                   <Group>
-                    <Avatar radius="xl" size="sm" src={person.avatar} />
+                    <Avatar radius="xl" size="sm" src={person.image} />
                     <div>
                       <Text size="sm" weight={500}>
-                        {person.name}
+                        {`${person.firstName} ${person.lastName}`}
                       </Text>
                       <Text size="xs" color="dimmed">
                         {person.username}

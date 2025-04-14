@@ -72,7 +72,7 @@ async function updateProfile(req, res) {
 }
 
 async function updateAvatar(req, res) {
-  if(req.body.oldImgUrl){
+  if (req.body.oldImgUrl) {
     deleteImage(req.body.oldImgUrl);
   }
   await Profile.findByIdAndUpdate(
@@ -89,8 +89,17 @@ async function updateAvatar(req, res) {
   });
 }
 
+async function getFollowRecommendation(req, res) {
+  res.send({
+    data: [
+      { username: "johndoe", firstName: "John", lastName: "Doe", image: "" },
+    ],
+  });
+}
+
 module.exports = {
   getProfile,
   updateProfile,
   updateAvatar,
+  getFollowRecommendation
 };
