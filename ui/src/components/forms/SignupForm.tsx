@@ -8,7 +8,6 @@ import {
 
 import AuthService from "src/services/AuthService";
 import { DateInput } from "@mantine/dates";
-import { notifications as msg } from "@mantine/notifications";
 import { useForm } from "@mantine/form";
 
 export function SignupForm({ close }: { close: () => void }) {
