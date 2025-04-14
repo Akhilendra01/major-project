@@ -32,7 +32,7 @@ router.post("/create-post", postsPhotoUpload.array("images"), createPost);
 router.get("/get-post", getPost);
 router.delete("/delete-post", deletePost);
 router.get("/constants", getConstants);
-router.post("/create-article", createArticle);
+router.post("/create-article", postsPhotoUpload.array("images"), createArticle);
 router.get("/get-articles", getArticles);
 router.get("/get-profile/:username", getProfile);
 router.put("/update-profile", updateProfile);

@@ -1,9 +1,3 @@
-// import { ApiService } from "./ApiService";
-
-// interface PredictResponse {
-//   text: string;
-// }
-
 class LlmService {
   static async predict(prompt: string, onData: (chunk: string) => void) {
     const response = await fetch(

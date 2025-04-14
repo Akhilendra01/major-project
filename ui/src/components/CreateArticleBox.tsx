@@ -13,6 +13,7 @@ import {
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 import { useRef, useState } from "react";
 
+import ContentService from "src/services/ContentService";
 import { IconPhoto } from "@tabler/icons-react";
 
 function CreateArticleBox() {
@@ -46,25 +47,24 @@ function CreateArticleBox() {
     setTags((prev) => prev.filter((t) => t !== tag));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setLoading(true);
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("content", content);
-    images.forEach((img) => formData.append("images", img));
-    console.log("Submit post", { title, content, images });
+    await ContentService.createArticle({
+      title: title,
+      content: content,
+      tags: tags,
+      images: images,
+    });
     setTitle("");
     setContent("");
     setImages([]);
+    setTags([]);
     setLoading(false);
-    // axios.post('/api/posts', formData)
   };
 
   return (
     <Card shadow="sm" padding="lg" radius="lg" withBorder className="bg-white">
-      <Text className="mb-4 text-gray-500">
-        Share you experiences ....
-      </Text>
+      <Text className="mb-4 text-gray-500">Share you experiences ....</Text>
 
       <div className="space-y-4">
         <TextInput

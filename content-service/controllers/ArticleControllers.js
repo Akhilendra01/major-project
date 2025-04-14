@@ -1,10 +1,13 @@
 const Article = require("../models/Article");
 
 async function createArticle(req, res) {
-  const { title, content, author, roleTag, companyTag } = req.body;
-  const article = new Article({ title, content, author, roleTag, companyTag});
+  const article = new Article(req.body);
   await article.save();
-  return res.status(200).json({"message": "Article posted successfully"});
+  return res.status(200).send({
+    data: {
+      article: article,
+    },
+  });
 }
 
 async function getArticles(req, res) {
@@ -16,7 +19,7 @@ async function getArticles(req, res) {
   return res.status(200).json(articles);
 }
 
-module.exports={
-    createArticle,
-    getArticles
-}
+module.exports = {
+  createArticle,
+  getArticles,
+};

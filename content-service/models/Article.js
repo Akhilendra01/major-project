@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const articleSchema = new mongoose.Schema({
+  author: {
+    type: String,
+    required: true,
+  },
   title: {
     type: String,
     required: true,
@@ -9,17 +13,13 @@ const articleSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  companyTag: {
-    type: String,
-    required: true,
+  images: {
+    type: [String],
+    default: [],
   },
-  roleTag: {
-    type: String,
-    required: true,
-  },
-  author: {
-    type: String,
-    required: true,
+  tags: {
+    type: [String],
+    default: [],
   },
   createdAt: {
     type: Date,
@@ -28,6 +28,14 @@ const articleSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now,
+  },
+  upvotes: {
+    type: Number,
+    default: 0,
+  },
+  downvotes: {
+    type: Number,
+    default: 0,
   },
 });
 

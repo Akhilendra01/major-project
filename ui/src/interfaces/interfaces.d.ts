@@ -45,6 +45,26 @@ export interface CreatePostRequest {
   images: File[] | null | undefined;
 }
 
+export interface CreateArticleRequest {
+  title: string | "";
+  content: string | "";
+  tags: string[];
+  images: File[] | null | undefined;
+}
+
+export interface Article{
+  author: string;
+  title: string;
+  content: string;
+  tags: string[];
+  images: string[];
+  createdAt: string;
+  updatedAt: string;
+  _id: string;
+  upvotes: number;
+  downvotes: number;
+}
+
 export interface EmptyResponse{
   message: string;
 }
@@ -79,4 +99,11 @@ export interface ProfileFormValues {
   skills: string[];
   batch: number | null;
   branch: string | "";
+}
+
+export interface ApiResponse<T> {
+  data: T;
+  message?: string;
+  status: number;
+  error?: string;
 }

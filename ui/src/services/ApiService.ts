@@ -1,9 +1,4 @@
-export interface ApiResponse<T> {
-  data: T;
-  message?: string;
-  status: number;
-  error?: string;
-}
+import { ApiResponse } from "src/interfaces";
 
 export class ApiService {
   private baseURL: string;
