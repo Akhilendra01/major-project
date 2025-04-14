@@ -10,7 +10,7 @@ async function createProfile(username, email) {
 }
 
 async function getProfile(req, res) {
-  const profile = await Profile.findOne({ username: req.params.username });
+  let profile = await Profile.findOne({ username: req.params.username });
   if (!profile) {
     if (req.user.username !== req.params.username) {
       return res.status(404).send({
