@@ -13,10 +13,15 @@ import {
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 import { useRef, useState } from "react";
 
+import { Article } from "src/interfaces";
 import ContentService from "src/services/ContentService";
 import { IconPhoto } from "@tabler/icons-react";
 
-function CreateArticleBox() {
+function CreateArticleBox({
+  setArticles,
+}: {
+  setArticles: React.Dispatch<React.SetStateAction<Article[]>>;
+}) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [images, setImages] = useState<File[]>([]);
@@ -49,12 +54,13 @@ function CreateArticleBox() {
 
   const handleSubmit = async () => {
     setLoading(true);
-    await ContentService.createArticle({
+    const response = await ContentService.createArticle({
       title: title,
       content: content,
       tags: tags,
       images: images,
     });
+    setArticles((prev) => [response.data, ...prev]);
     setTitle("");
     setContent("");
     setImages([]);

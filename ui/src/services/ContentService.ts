@@ -62,6 +62,7 @@ class ContentService {
     formData.append("title", createPostRequest.title);
     formData.append("content", createPostRequest.content);
     formData.append("tags", JSON.stringify(createPostRequest.tags));
+
     if (createPostRequest.images) {
       for (let i = 0; i < createPostRequest.images.length; i++) {
         formData.append("images", createPostRequest.images[i]);

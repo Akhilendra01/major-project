@@ -58,8 +58,8 @@ export interface Article{
   content: string;
   tags: string[];
   images: string[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   _id: string;
   upvotes: number;
   downvotes: number;

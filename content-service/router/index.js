@@ -28,11 +28,11 @@ const {
   updateAvatar,
 } = require("../controllers/ProfileControllers");
 
-router.post("/create-post", postsPhotoUpload.array("images"), createPost);
+router.post("/create-post", postsPhotoUpload.array("images", 3), createPost);
 router.get("/get-post", getPost);
 router.delete("/delete-post", deletePost);
 router.get("/constants", getConstants);
-router.post("/create-article", postsPhotoUpload.array("images"), createArticle);
+router.post("/create-article", postsPhotoUpload.array("images", 3), createArticle);
 router.get("/get-articles", getArticles);
 router.get("/get-profile/:username", getProfile);
 router.put("/update-profile", updateProfile);

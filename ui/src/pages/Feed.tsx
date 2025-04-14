@@ -1,34 +1,74 @@
 import { Avatar, Badge, Button, Card, Title } from "@mantine/core";
+import { useEffect, useState } from "react";
 
+import Article from "src/components/Article";
+import { Article as ArticleObject } from "src/interfaces";
 import CreateArticleBox from "src/components/CreateArticleBox";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { useMediaQuery } from "@mantine/hooks";
 
 function Feed() {
   const isMobile = useMediaQuery("(max-width: 768px)");
+
+  // States for articles and pagination
+  const [articles, setArticles] = useState<ArticleObject[]>([]);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [page, setPage] = useState<number>(1); // for pagination
+
+  const fetchArticles = async (page: number) => {
+  return new Promise<ArticleObject[]>((resolve) => {
+    setTimeout(() => {
+      resolve([
+        {
+          _id: `id-${page}`, // Mock _id
+          title: `Sample Article ${page}`,
+          content: "This is a sample article content.",
+          author: "John Doe",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          upvotes: 10,
+          downvotes: 2,
+          tags: ["Sample", "Tech"], // Sample tags
+          images: [], // Sample images array
+        },
+      ]);
+    }, 1000); // Simulate network delay of 1 second
+  });
+  };
+
+  useEffect(() => {
+    const loadArticles = async () => {
+      ``;
+      const newArticles = await fetchArticles(page);
+      if (newArticles.length) {
+        setArticles((prevArticles) => [...prevArticles, ...newArticles]);
+      } else {
+        setHasMore(false);
+      }
+    };
+    loadArticles();
+  }, [page]);
 
   return (
     <div className="flex w-full justify-center px-4 py-6 gap-6">
       {/* Feed Center */}
       <div className={`${isMobile ? "w-full" : "w-7/12"} space-y-6`}>
         {/* Create Post */}
-        <CreateArticleBox />
+        <CreateArticleBox setArticles={setArticles}/>
 
-        {/* Feed Posts */}
-        {[1, 2, 3].map((id) => (
-          <Card key={id} shadow="sm" padding="lg" radius="md" withBorder>
-            <div className="flex gap-3 items-center mb-3">
-              <Avatar radius="xl" />
-              <div>
-                <p className="font-semibold">John Doe</p>
-                <p className="text-sm text-gray-500">Posted 1h ago</p>
-              </div>
-            </div>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore.
-            </p>
-          </Card>
-        ))}
+        {/* Infinite Scroll for Feed Posts */}
+        <InfiniteScroll
+          dataLength={articles.length} // Current length of articles
+          next={() => setPage((prevPage) => prevPage + 1)} // Increment page to fetch more
+          hasMore={hasMore} // Control whether there are more articles
+          loader={<h4>Loading...</h4>} // Loading message while fetching
+          endMessage={<p>No more articles to show.</p>} // Message when no more articles
+          scrollThreshold={0.9} // Trigger when reaching 90% of the page
+        >
+          {articles.map((article) => (
+            <Article key={article._id} article={article} />
+          ))}
+        </InfiniteScroll>
       </div>
 
       {/* Right Sidebar */}

@@ -7,7 +7,7 @@ async function createPost(req, res) {
     title: req.body.title,
     content: req.body.content,
     images: req.files.map((file) => file.path),
-    tags: req.body.tags,
+    tags: JSON.parse(req.body.tags),
   });
 
   await post.save();

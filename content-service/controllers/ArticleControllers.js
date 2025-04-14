@@ -1,12 +1,16 @@
 const Article = require("../models/Article");
 
 async function createArticle(req, res) {
-  const article = new Article(req.body);
+  req.body.tags = JSON.parse(req.body.tags);
+  console.log("Uploaded files: ", req.files);
+  const article = new Article({
+    author: req.user.username,
+    ...req.body,
+    images: req.files.map((file) => file.path),
+  });
   await article.save();
   return res.status(200).send({
-    data: {
-      article: article,
-    },
+    data: article,
   });
 }
 
