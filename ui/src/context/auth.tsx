@@ -56,6 +56,12 @@ export default function AuthProvider({
         message: `User not exists`,
       });
       return false;
+    } else if (res.status === 403) {
+      notifications.show({
+        title: "Login Failure",
+        message: `User is yet to verify email`,
+      });
+      return false;
     }
     navigate("/dashboard");
   }

@@ -16,6 +16,14 @@ async function LoginController(req, res) {
     return;
   }
 
+  if(user.isVerified === false) {
+    res.send({
+      status: 403,
+      message: "Email not verified",
+    });
+    return;
+  }
+
   const match = await bcrypt.compare(password, user.password);
 
   if (!match) {
