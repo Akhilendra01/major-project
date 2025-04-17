@@ -109,7 +109,7 @@ async def predict():
             res = await client.post(
                 req_path,
                 json={"tags": tags},
-                headers={"Authorization": f'Bearer {os.environ.get('ACCESS_TOKEN')}'},
+                headers={"Authorization": f'Bearer {os.environ.get("ACCESS_TOKEN")}'},
             )
             articles = res.json().get("articles", [])
             print("Fetched articles:", articles)
