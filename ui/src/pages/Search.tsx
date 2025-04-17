@@ -41,9 +41,11 @@ export default function Search() {
         />
       </div>
       {loading && <Loader />}
-      {articles.map((article) => (
-        <Article key={article._id} article={article} />
-      ))}
+      <div className={`pd-4 mx-auto ${isMobile ? "w-11/12" : "w-3/4"}`}>
+        {articles.map((article) => (
+          <Article key={article._id} article={article} />
+        ))}
+      </div>
     </>
   );
 }
