@@ -4,6 +4,8 @@ from flask import Flask, request, jsonify, Response
 import httpx
 import os, requests
 from llama_cpp import Llama
+from dotenv import load_dotenv
+load_dotenv()
 
 # ----------------------- Config -----------------------
 MODEL_PATH = "C:/Users/ankit/Downloads/phi-3-mini-4k-instruct-q4.gguf"
@@ -103,6 +105,7 @@ async def predict():
 
         # Async HTTP request to fetch articles
         req_path = f'{os.environ.get("CONTENT_SERVER_URL")}/get-tagged-articles'
+        print(req_path)
         async with httpx.AsyncClient() as client:
             res = await client.post(req_path, json={"tags": tags})
             articles = res.json().get("articles", [])
