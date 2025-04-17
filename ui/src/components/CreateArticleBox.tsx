@@ -1,4 +1,5 @@
 import {
+  Badge,
   Button,
   Card,
   CloseButton,
@@ -24,6 +25,7 @@ function CreateArticleBox({
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [images, setImages] = useState<File[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
   const openRef = useRef<() => void>(null);
@@ -37,19 +39,34 @@ function CreateArticleBox({
     URL.revokeObjectURL(fileName);
   };
 
+  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const newTag = e.currentTarget.value.trim();
+      if (newTag && !tags.includes(newTag)) {
+        setTags([...tags, newTag]);
+        e.currentTarget.value = "";
+      }
+    }
+  };
+
+  const removeTag = (tag: string) => {
+    setTags((prev) => prev.filter((t) => t != tag));
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
     const response = await ContentService.createArticle({
       title: title,
       content: content,
-      // tags: tags,
+      tags: tags,
       images: images,
     });
     setArticles((prev) => [response.data, ...prev]);
     setTitle("");
     setContent("");
     setImages([]);
-    // setTags([]);
+    setTags([]);
     setLoading(false);
   };
 
@@ -70,6 +87,29 @@ function CreateArticleBox({
           onChange={(e) => setContent(e.currentTarget.value)}
           minRows={4}
         />
+        <div>
+          <div className="flex flex-wrap gap-2 mt-2 my-4">
+            {tags.map((tag) => (
+              <Badge
+                key={tag}
+                rightSection={
+                  <CloseButton
+                    onClick={() => removeTag(tag)}
+                    size="xs"
+                    style={{ marginLeft: 5 }}
+                  />
+                }
+              >
+                {tag}
+              </Badge>
+            ))}
+          </div>
+            <TextInput
+              label="Tags"
+              placeholder="Type a tag and press Enter"
+              onKeyDown={handleTagKeyDown}
+            />
+        </div>
 
         {/* Hidden Dropzone for image upload */}
         <Dropzone

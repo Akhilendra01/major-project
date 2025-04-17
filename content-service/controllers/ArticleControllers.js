@@ -1,6 +1,6 @@
 const Article = require("../models/Article");
 const Embedding = require("../models/Embedding");
-const { getTags, getEmbeddings } = require("./utilities");
+const { getEmbeddings } = require("./utilities");
 
 require("dotenv").config();
 
@@ -37,7 +37,7 @@ async function searchArticles(req, res) {
 }
 
 async function createArticle(req, res) {
-  // req.body.tags = await getTags(req.body);
+  req.body.tags = JSON.parse(req.body.tags);
   const embedding = await getEmbeddings(req.body);
   const article = new Article({
     author: req.user.username,

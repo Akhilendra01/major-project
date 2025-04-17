@@ -41,7 +41,7 @@ export type SetProfileData=Dispatch<SetStateAction<UserData>>
 export interface CreatePostRequest {
   title: string | "";
   content: string | "";
-  tags?: string[];
+  tags: string[];
   images: File[] | null | undefined;
 }
 
