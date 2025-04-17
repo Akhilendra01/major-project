@@ -11,11 +11,11 @@ function Article({ article }: { article: ArticleObject }) {
   const [downvotes, setDownvotes] = useState<number>(article.downvotes);
 
   const doUpvote = async () => {
-    const response=await ContentService.upvote(article._id);
+    const response = await ContentService.upvote(article._id);
     setUpvotes(response.data.upvotes);
     setDownvotes(response.data.downvotes);
   };
-  
+
   const doDownvote = async () => {
     const response = await ContentService.downvote(article._id);
     setUpvotes(response.data.upvotes);
@@ -36,9 +36,15 @@ function Article({ article }: { article: ArticleObject }) {
       </div>
       <Text className="text-lg font-medium">{article.title}</Text>
       {article.tags.length > 0 && (
-        <div className="mt-2 flex gap-2">
+        <div className="mt-2 flex flex-wrap gap-2 my-4">
           {article.tags.map((tag) => (
-            <Badge key={tag} color="blue" variant="light">
+            <Badge
+              key={tag}
+              size="xs"
+              color="blue"
+              variant="light"
+              className="whitespace-normal break-words max-w-full text-xs px-3 py-1 font-medium"
+            >
               {tag}
             </Badge>
           ))}
@@ -59,7 +65,7 @@ function Article({ article }: { article: ArticleObject }) {
       )}
       <div className="votes mt-3">
         <Button variant="outline" size="xs" onClick={doUpvote}>
-          <ArrowUp/> {upvotes}
+          <ArrowUp /> {upvotes}
         </Button>
         <Button
           variant="outline"
@@ -67,7 +73,7 @@ function Article({ article }: { article: ArticleObject }) {
           className="ml-2"
           onClick={doDownvote}
         >
-          <ArrowDown/> {downvotes}
+          <ArrowDown /> {downvotes}
         </Button>
       </div>
     </Card>
