@@ -38,10 +38,12 @@ def generateTagsForPrompt(prompt):
 
     tag_prompt = (
         "<|user|>\n"
-        f"Generate a comma-separated list of 5 to 10 concise tags for the following post:\n\n{prompt}\n\n"
+        "Generate a comma-separated list of 5 to 10 concise hyphen-separated word tags for the following post:\n\n"
+        f"{prompt}\n\n"
         "All tags should be lowercase, relevant, and without hashtags.\n"
         "<|end|>\n<|assistant|>"
     )
+
 
     output = llm(
         tag_prompt,
