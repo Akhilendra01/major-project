@@ -127,7 +127,7 @@ async def predict():
 
         logger.info(f"Generating interview questions for topic: '{prompt}'")
         full_prompt = format_prompt(prompt, support_text)
-
+        logger.info(f"Full prompt: '{full_prompt}'")
         return Response(stream_response(full_prompt), content_type="text/plain")
 
     except Exception as e:
@@ -147,7 +147,7 @@ def generateTags():
 
         tag_prompt = (
             "<|user|>\n"
-            f"Generate a comma-separated list of 5 to 10 concise tags for the following post:\n\n{content}\n\n"
+            f"Generate a comma-separated list of 5 to 10 concise tags for the following text:\n\n{content}\n\n"
             "All tags should be lowercase, relevant, and without hashtags.\n"
             "<|end|>\n<|assistant|>"
         )
