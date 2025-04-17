@@ -1,10 +1,14 @@
-from transformers import AutoTokenizer, AutoModel
+import os
 import torch
 import requests
+from transformers import AutoTokenizer, AutoModel
 from flask import Flask, request, jsonify
+from dotenv import load_dotenv
 
-tokenizer = AutoTokenizer.from_pretrained("thenlper/gte-large")
-model = AutoModel.from_pretrained("./gte-large")
+load_dotenv()
+
+tokenizer = AutoTokenizer.from_pretrained(os.environ.get("MODEL_PATH"))
+model = AutoModel.from_pretrained(os.environ.get("MODEL_PATH"))
 
 print("Model loaded successfully")
 

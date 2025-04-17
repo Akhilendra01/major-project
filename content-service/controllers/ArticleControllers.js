@@ -26,9 +26,14 @@ async function searchArticles(req, res) {
         filter: {},
       },
     },
+    { $project: { score: { $meta: "vectorSearchScore" }, articleId: 1 } },
   ]);
-  const articleIds = similarEmbeddings.map((doc) => doc.articleId);
-  const articles = await Article.find({ _id: { $in: articleIds } });
+
+  const articleIds = similarEmbeddings
+    .sort((a, b) => b.score - a.score)
+    .map((doc) => doc.articleId);
+  const articles = await Article.find({ _id: { $in: articleIds } }).sort({upvotes: -1});
+  
   res.status(200).send({
     data: {
       articles: articles,
