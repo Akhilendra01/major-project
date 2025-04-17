@@ -37,6 +37,16 @@ const articleSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+
+  upvoteUserIds: {
+    type: [String],
+    default: [],
+  },
+  
+  downvoteUserIds: {
+    type: [String],
+    default: [],
+  },
 });
 
 module.exports = mongoose.model("Article", articleSchema);

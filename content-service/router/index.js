@@ -23,6 +23,8 @@ const {
   getArticles,
   getArticleForFeed,
   getTrendingTags,
+  upvote,
+  downvote,
 } = require("../controllers/ArticleControllers");
 const {
   getProfile,
@@ -51,4 +53,6 @@ router.post(
 router.get("/feed", getArticleForFeed);
 router.get("/get-trending-tags", getTrendingTags);
 router.get("/get-follow-recommendations", getFollowRecommendation);
+router.get("/upvote/:id", upvote);
+router.get("/downvote/:id", downvote);
 module.exports = router;

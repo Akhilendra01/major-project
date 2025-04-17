@@ -7,6 +7,7 @@ import {
   ProfileFormValues,
   ProfileResponse,
   UserBadge,
+  VoteResponse,
 } from "src/interfaces";
 
 import { ApiService } from "./ApiService";
@@ -83,6 +84,13 @@ class ContentService {
   }
   static async getFollowRecommendations(): Promise<ApiResponse<UserBadge[]>> {
     return await this.apiService.get<UserBadge[]>(`get-follow-recommendations`);
+  }
+
+  static async upvote(id: string): Promise<ApiResponse<VoteResponse>> {
+    return await this.apiService.get<VoteResponse>(`upvote/${id}`);
+  }
+  static async downvote(id: string): Promise<ApiResponse<VoteResponse>> {
+    return await this.apiService.get<VoteResponse>(`downvote/${id}`);
   }
 }
 

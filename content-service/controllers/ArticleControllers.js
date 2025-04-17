@@ -49,9 +49,107 @@ async function getTrendingTags(req, res) {
   res.status(200).send({ data: response.map((tags) => tags._id) });
 }
 
+async function upvote(req, res) {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const article = await Article.findById(id);
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+
+    const hasUpvoted = article.upvoteUserIds.includes(userId);
+    const hasDownvoted = article.downvoteUserIds.includes(userId);
+
+    let update = { $set: { updatedAt: new Date() } };
+
+    if (hasUpvoted) {
+      // Toggle off upvote
+      update.$inc = { upvotes: -1 };
+      update.$pull = { upvoteUserIds: userId };
+    } else {
+      update.$inc = { upvotes: 1 };
+      update.$push = { upvoteUserIds: userId };
+
+      if (hasDownvoted) {
+        // Remove downvote if switching
+        update.$inc.downvotes = -1;
+        if (!update.$pull) update.$pull = {};
+        update.$pull.downvoteUserIds = userId;
+      }
+    }
+
+    const updatedArticle = await Article.findByIdAndUpdate(id, update, {
+      new: true,
+    });
+
+    res
+      .status(200)
+      .json({
+        data: {
+          upvotes: updatedArticle.upvotes,
+          downvotes: updatedArticle.downvotes,
+        },
+      });
+  } catch (err) {
+    console.error("Upvote error:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+async function downvote(req, res) {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const article = await Article.findById(id);
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+
+    const hasDownvoted = article.downvoteUserIds.includes(userId);
+    const hasUpvoted = article.upvoteUserIds.includes(userId);
+
+    let update = { $set: { updatedAt: new Date() } };
+
+    if (hasDownvoted) {
+      // Toggle off downvote
+      update.$inc = { downvotes: -1 };
+      update.$pull = { downvoteUserIds: userId };
+    } else {
+      update.$inc = { downvotes: 1 };
+      update.$push = { downvoteUserIds: userId };
+
+      if (hasUpvoted) {
+        // Remove upvote if switching
+        update.$inc.upvotes = -1;
+        if (!update.$pull) update.$pull = {};
+        update.$pull.upvoteUserIds = userId;
+      }
+    }
+
+    const updatedArticle = await Article.findByIdAndUpdate(id, update, {
+      new: true,
+    });
+
+    res.status(200).json({
+      data: {
+        upvotes: updatedArticle.upvotes,
+        downvotes: updatedArticle.downvotes,
+      },
+    });
+  } catch (err) {
+    console.error("Downvote error:", err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 module.exports = {
   createArticle,
   getArticles,
   getArticleForFeed,
   getTrendingTags,
+  upvote,
+  downvote,
 };

@@ -33,7 +33,6 @@ async function getProfile(req, res) {
 
 async function updateProfile(req, res) {
   const profile = await Profile.findOne({ username: req.body.username });
-  console.log(profile);
   if (!profile) {
     return res.status(404).send({ status: 404, message: "Profile not found" });
   }

@@ -114,3 +114,8 @@ export interface UserBadge{
   firstName: string;
   lastName: string;
 }
+
+export interface VoteResponse{
+  upvotes: number;
+  downvotes: number;
+}
