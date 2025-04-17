@@ -8,26 +8,24 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-# Copy the rest of the application files
+# Copy the rest of the app and build it
 COPY . .
-
-# Build the app for production
 RUN npm run build
 
-# ---------- Stage 2: Serve with Apache ----------
+# ---------- Stage 2: Serve with Apache HTTP Server ----------
 FROM httpd:2.4
 
 # Remove default Apache web files
 RUN rm -rf /usr/local/apache2/htdocs/*
 
-# Copy built files from builder stage to Apache web directory
+# Copy built files from builder stage to Apache's web root
 COPY --from=builder /app/dist/ /usr/local/apache2/htdocs/
 
-# Optional: Copy a custom Apache config if needed (uncomment if you have one)
-# COPY ./apache.conf /usr/local/apache2/conf/httpd.conf
+# Optional: Add .htaccess to support SPA routing (uncomment if needed)
+COPY public/.htaccess /usr/local/apache2/htdocs/
 
-# Expose HTTP port
+# Expose port 80 for HTTP
 EXPOSE 80
 
-# Start Apache in the foreground
+# Start Apache in foreground
 CMD ["httpd-foreground"]
