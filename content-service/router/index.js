@@ -26,6 +26,7 @@ const {
   upvote,
   downvote,
   getTaggedArticles,
+  searchArticles,
 } = require("../controllers/ArticleControllers");
 const {
   getProfile,
@@ -58,6 +59,7 @@ router.get("/get-trending-tags", getTrendingTags);
 router.get("/get-follow-recommendations", getFollowRecommendation);
 router.get("/upvote/:id", upvote);
 router.get("/downvote/:id", downvote);
+router.get("/search-articles", searchArticles);
 
 router.delete("/delete-post", deletePost);
 

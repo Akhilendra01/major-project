@@ -1,69 +1,44 @@
-import { Button, Grid, NumberInput, Select, Text } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { Text, TextInput } from "@mantine/core";
 
-import ConstantsService from "src/services/ConstantsService";
+import Article from "src/components/Article";
+import { Article as ArticleObject } from "src/interfaces";
+import ContentService from "src/services/ContentService";
+import { IconSearch } from "@tabler/icons-react";
 import { useMediaQuery } from "@mantine/hooks";
+import { useState } from "react";
 
 export default function Search() {
+  const [query, setQuery] = useState("");
+  const [articles, setArticles] = useState<ArticleObject[]>([]);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
-  const [org, setOrg] = useState<string | null>("");
-  const [role, setRole] = useState<string | null>("");
-  const [year, setYear] = useState<number | "">("");
-
-  const [companies, setCompanies] = useState<string[]>([]);
-  const [positions, setPositions] = useState<string[]>([]);
-
-  useEffect(() => {
-    console.log('called');
-    ConstantsService.getConstants().then((response) => {
-      setCompanies(response.data.companies.map((company: any) => company.name));  
-      setPositions(response.data.positions.map((position: any) => position.title));
-    }); 
-  }, []);
-
-  const search = () => {
-    //TODO: complete implementation
-    console.log(org, role, year);
+  const handleSearch = async () => {
+    console.log("Searching for:", query);
+    const res = await ContentService.searchArticles(query);
+    console.log(res.data.articles);
+    setArticles(res.data.articles);
   };
-
   return (
     <>
-      <Text size={20} className="text-center my-2">
+      <Text size={14} className="text-center my-2">
         Search Articles
       </Text>
-      <Grid className={`${isMobile ? "w-full" : "w-1/2"} mx-auto`} gutter="sm">
-        <Grid.Col span={isMobile ? 12 : 3}>
-          <Select
-            data={companies}
-            placeholder="Select company"
-            value={org}
-            onChange={setOrg}
-          />
-        </Grid.Col>
-        <Grid.Col span={isMobile ? 12 : 3}>
-          <Select
-            data={positions}
-            placeholder="Select role"
-            value={role}
-            onChange={setRole}
-          />
-        </Grid.Col>
-        <Grid.Col span={isMobile ? 12 : 3}>
-          <NumberInput
-            min={2000}
-            max={new Date().getFullYear()}
-            value={year}
-            onChange={setYear}
-            placeholder="Select year upto"
-          />
-        </Grid.Col>
-        <Grid.Col span={isMobile ? 12 : 3}>
-          <Button color="blue" fullWidth onClick={search}>
-            Search
-          </Button>
-        </Grid.Col>
-      </Grid>
+      <div className={`pd-4 mx-auto ${isMobile ? "w-10/12" : "w-2/4"}`}>
+        <TextInput
+          placeholder="Type to search..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSearch();
+          }}
+          rightSection={
+            <IconSearch cursor={`pointer`} onClick={handleSearch} />
+          }
+        />
+      </div>
+      {articles.map((article) => (
+        <Article key={article._id} article={article} />
+      ))}
     </>
   );
 }
