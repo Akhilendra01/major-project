@@ -1,7 +1,7 @@
 import { Chat, Dashboard } from "src/pages";
 import { Route, Routes } from "react-router-dom";
 
-import { Loader } from "@mantine/core";
+import Loader from "src/components/Loader";
 import React from "react";
 import RequiredLogin from "src/components/RequiredLogin";
 
@@ -15,11 +15,7 @@ const Feed = React.lazy(() => import("src/pages/Feed"));
 export default function Router() {
   return (
     <React.Suspense
-      fallback={
-        <div className="flex justify-center items-center h-screen w-full">
-          <Loader color="blue" size="md" />
-        </div>
-      }
+      fallback={<Loader/>}
     >
       <Routes>
         <Route path="/" element={<LandingPage />} />

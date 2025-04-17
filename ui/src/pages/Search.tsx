@@ -4,19 +4,23 @@ import Article from "src/components/Article";
 import { Article as ArticleObject } from "src/interfaces";
 import ContentService from "src/services/ContentService";
 import { IconSearch } from "@tabler/icons-react";
+import Loader from "src/components/Loader";
 import { useMediaQuery } from "@mantine/hooks";
 import { useState } from "react";
 
 export default function Search() {
   const [query, setQuery] = useState("");
   const [articles, setArticles] = useState<ArticleObject[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   const handleSearch = async () => {
     console.log("Searching for:", query);
+    setLoading(true);
     const res = await ContentService.searchArticles(query);
     console.log(res.data.articles);
     setArticles(res.data.articles);
+    setLoading(false);
   };
   return (
     <>
@@ -36,6 +40,7 @@ export default function Search() {
           }
         />
       </div>
+      {loading && <Loader />}
       {articles.map((article) => (
         <Article key={article._id} article={article} />
       ))}
