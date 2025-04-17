@@ -164,6 +164,45 @@ async function downvote(req, res) {
   }
 }
 
+async function getTaggedArticles(req, res) {
+  const requestTags = req.body.tags;
+
+  if (!Array.isArray(requestTags)) {
+    return res.status(400).json({ error: "tags must be an array" });
+  }
+
+  try {
+    const articles = await Article.aggregate([
+      {
+        $addFields: {
+          matchedTagsCount: {
+            $size: {
+              $setIntersection: ["$tags", requestTags],
+            },
+          },
+        },
+      },
+      {
+        $match: {
+          matchedTagsCount: { $gt: 0 },
+        },
+      },
+      {
+        $sort: {
+          matchedTagsCount: -1,
+          upvotes: -1,
+        },
+      },
+      { $limit: 5 },
+    ]);
+
+    res.status(200).json({ articles });
+  } catch (err) {
+    console.error("Error fetching articles:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+
 module.exports = {
   createArticle,
   getArticles,
