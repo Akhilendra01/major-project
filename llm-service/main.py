@@ -5,6 +5,8 @@ import httpx
 import os, requests
 from llama_cpp import Llama
 from dotenv import load_dotenv
+from urllib.parse import quote
+
 load_dotenv()
 
 # ----------------------- Config -----------------------
@@ -112,15 +114,12 @@ async def predict():
             return jsonify({"error": "Invalid input. 'prompt' key is required."}), 400
 
         prompt = data["prompt"].strip()
-        tags = generateTagsForPrompt(prompt)
 
-        req_path = f'{os.environ.get("CONTENT_SERVER_URL")}/get-tagged-articles'
-        access_token = os.environ.get("ACCESS_TOKEN")
+        req_path = f'{os.environ.get("CONTENT_SERVER_URL")}/search-articles?q={quote(prompt)}'
 
         async with httpx.AsyncClient() as client:
-            res = await client.post(
+            res = await client.get(
                 req_path,
-                json={"tags": tags},
                 headers={"Authorization": f'Bearer {os.environ.get("ACCESS_TOKEN")}'},
             )
             articles = res.json().get("articles", [])
