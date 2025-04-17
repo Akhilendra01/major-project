@@ -119,7 +119,7 @@ async def predict():
             res = await client.post(
                 req_path,
                 json={"tags": tags},
-                headers={"Authorization": f"Bearer {access_token}"},
+                headers={"Authorization": f'Bearer {os.environ.get("ACCESS_TOKEN")}'},
             )
             articles = res.json().get("articles", [])
 
