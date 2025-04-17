@@ -21,6 +21,67 @@ async function getTags(articleData) {
     });
 }
 
+async function getTagsForQuery(prompt) {
+  return await fetch(`${process.env.LLM_SERVER_URL}/generate-tags`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      prompt: prompt,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      return data.tags;
+    });
+}
+
+async function getTaggedArticlesForQuery(requestTags) {
+  if (!Array.isArray(requestTags)) {
+    return res.status(400).json({ error: "tags must be an array" });
+  }
+
+  const articles = await Article.aggregate([
+    {
+      $addFields: {
+        matchedTagsCount: {
+          $size: {
+            $setIntersection: ["$tags", requestTags],
+          },
+        },
+      },
+    },
+    {
+      $match: {
+        matchedTagsCount: { $gt: 0 },
+      },
+    },
+    {
+      $sort: {
+        matchedTagsCount: -1,
+        upvotes: -1,
+      },
+    },
+    { $limit: 30 },
+  ]);
+
+  return articles;
+}
+
+async function searchArticles(req, res) {
+  const q = req.query.q;
+  const tags = await getTagsForQuery(q);
+  console.log('tags for query: ', tags)
+  const articles = await getTaggedArticlesForQuery(tags);
+  res.status(200).send({
+    data: {
+      articles: articles,
+    },
+  });
+}
+
 async function createArticle(req, res) {
   req.body.tags = await getTags(req.body);
   const article = new Article({
@@ -209,6 +270,7 @@ module.exports = {
   getArticleForFeed,
   getTrendingTags,
   getTaggedArticles,
+  searchArticles,
   upvote,
   downvote,
 };

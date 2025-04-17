@@ -92,6 +92,10 @@ class ContentService {
   static async downvote(id: string): Promise<ApiResponse<VoteResponse>> {
     return await this.apiService.get<VoteResponse>(`downvote/${id}`);
   }
+
+  static async searchArticles(query: string): Promise<ApiResponse<{articles: Article[]}>> {
+    return await this.apiService.get<{articles: Article[]}>(`search-articles?q=${query}`);
+  }
 }
 
 export default ContentService;

@@ -2,6 +2,7 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
+require("dotenv").config();
 
 async function SignupController(req, res) {
   const username = req.body.username;
@@ -40,7 +41,7 @@ async function SignupController(req, res) {
     },
   });
 
-  const verifyLink = `http://localhost:8080/verify-email?token=${emailToken}&user=${user._id}`;
+  const verifyLink = `${process.env.EMAIL_VERIFY_LINK_BASE}/verify-email?token=${emailToken}&user=${user._id}`;
 
   await transporter.sendMail({
     from: '"Campus Portal" <no-reply@campusportal.com>',

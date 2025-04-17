@@ -35,8 +35,8 @@ function CreatePost() {
     if (e.key === "Enter") {
       e.preventDefault();
       const newTag = e.currentTarget.value.trim();
-      if (newTag && !form.values.tags.includes(newTag)) {
-        form.setFieldValue("tags", [...form.values.tags, newTag]);
+      if (newTag && !form.values.tags?.includes(newTag)) {
+        form.setFieldValue("tags", [...form.values.tags||[], newTag]);
         e.currentTarget.value = "";
       }
     }
@@ -45,7 +45,7 @@ function CreatePost() {
   const removeTag = (tagToRemove: string) => {
     form.setFieldValue(
       "tags",
-      form.values.tags.filter((tag) => tag !== tagToRemove)
+      form.values.tags?.filter((tag) => tag !== tagToRemove)
     );
   };
 
@@ -99,7 +99,7 @@ function CreatePost() {
             onKeyDown={handleTagKeyDown}
           />
           <div className="flex flex-wrap gap-2 mt-2">
-            {form.values.tags.map((tag) => (
+            {form.values.tags && form.values.tags.map((tag) => (
               <Badge
                 key={tag}
                 rightSection={
