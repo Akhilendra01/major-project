@@ -1,7 +1,28 @@
 const Article = require("../models/Article");
 
+require("dotenv").config();
+
+async function getTags(articleData) {
+  const prompt = `${articleData.title}\n${articleData.content}`;
+
+  return await fetch(`${process.env.LLM_SERVER_URL}/generate-tags`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      prompt: prompt,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      return data.tags;
+    });
+}
+
 async function createArticle(req, res) {
-  req.body.tags = JSON.parse(req.body.tags);
+  req.body.tags = await getTags(req.body);
   const article = new Article({
     author: req.user.username,
     ...req.body,
@@ -84,14 +105,12 @@ async function upvote(req, res) {
       new: true,
     });
 
-    res
-      .status(200)
-      .json({
-        data: {
-          upvotes: updatedArticle.upvotes,
-          downvotes: updatedArticle.downvotes,
-        },
-      });
+    res.status(200).json({
+      data: {
+        upvotes: updatedArticle.upvotes,
+        downvotes: updatedArticle.downvotes,
+      },
+    });
   } catch (err) {
     console.error("Upvote error:", err);
     res.status(500).json({ message: "Internal Server Error" });

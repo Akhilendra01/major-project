@@ -1,5 +1,4 @@
 import {
-  Badge,
   Button,
   Card,
   CloseButton,
@@ -26,9 +25,8 @@ function CreateArticleBox({
   const [content, setContent] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
-  const [tags, setTags] = useState<string[]>([]);
 
-  const openRef = useRef<() => void>(null); // ✅ function ref for Dropzone
+  const openRef = useRef<() => void>(null);
 
   const handleImageDrop = (files: File[]) => {
     setImages((prev) => [...prev, ...files]);
@@ -39,32 +37,19 @@ function CreateArticleBox({
     URL.revokeObjectURL(fileName);
   };
 
-  const addTagToList = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key != "Enter") return;
-    e.preventDefault();
-    const newTag = e.currentTarget.value.trim();
-    if (!newTag || tags.includes(newTag)) return;
-    setTags((prev) => [...prev, newTag]);
-    e.currentTarget.value = "";
-  };
-
-  const removeTag = (tag: string) => {
-    setTags((prev) => prev.filter((t) => t !== tag));
-  };
-
   const handleSubmit = async () => {
     setLoading(true);
     const response = await ContentService.createArticle({
       title: title,
       content: content,
-      tags: tags,
+      // tags: tags,
       images: images,
     });
     setArticles((prev) => [response.data, ...prev]);
     setTitle("");
     setContent("");
     setImages([]);
-    setTags([]);
+    // setTags([]);
     setLoading(false);
   };
 
@@ -86,30 +71,6 @@ function CreateArticleBox({
           minRows={4}
         />
 
-        {/* Tags input (optional) */}
-        <div>
-          {tags.map((tag) => (
-            <Badge
-              key={tag}
-              color="blue"
-              className="mr-2 mb-2 cursor-pointer"
-              onClick={() => removeTag(tag)}
-              rightSection={
-                <CloseButton
-                  onClick={() => removeTag(tag)}
-                  size="xs"
-                  style={{ marginLeft: 5 }}
-                />
-              }
-            >
-              {tag}
-            </Badge>
-          ))}
-          <TextInput
-            placeholder="Type a tag and press Enter"
-            onKeyDown={addTagToList}
-          />
-        </div>
         {/* Hidden Dropzone for image upload */}
         <Dropzone
           openRef={openRef}
