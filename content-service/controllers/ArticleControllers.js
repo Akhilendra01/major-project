@@ -208,6 +208,7 @@ module.exports = {
   getArticles,
   getArticleForFeed,
   getTrendingTags,
+  getTaggedArticles,
   upvote,
   downvote,
 };

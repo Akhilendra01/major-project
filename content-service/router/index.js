@@ -25,6 +25,7 @@ const {
   getTrendingTags,
   upvote,
   downvote,
+  getTaggedArticles,
 } = require("../controllers/ArticleControllers");
 const {
   getProfile,
@@ -34,25 +35,30 @@ const {
 } = require("../controllers/ProfileControllers");
 
 router.post("/create-post", postsPhotoUpload.array("images", 3), createPost);
-router.get("/get-post", getPost);
-router.delete("/delete-post", deletePost);
-router.get("/constants", getConstants);
 router.post(
   "/create-article",
   postsPhotoUpload.array("images", 3),
   createArticle
 );
-router.get("/get-articles", getArticles);
-router.get("/get-profile/:username", getProfile);
-router.put("/update-profile", updateProfile);
 router.post(
   "/update-avatar",
   profilePhotoUpload.single("avatar"),
   updateAvatar
 );
+router.post("/get-tagged-articles", getTaggedArticles);
+
+router.put("/update-profile", updateProfile);
+
+router.get("/get-post", getPost);
+router.get("/constants", getConstants);
+router.get("/get-articles", getArticles);
+router.get("/get-profile/:username", getProfile);
 router.get("/feed", getArticleForFeed);
 router.get("/get-trending-tags", getTrendingTags);
 router.get("/get-follow-recommendations", getFollowRecommendation);
 router.get("/upvote/:id", upvote);
 router.get("/downvote/:id", downvote);
+
+router.delete("/delete-post", deletePost);
+
 module.exports = router;
