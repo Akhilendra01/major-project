@@ -1,75 +1,34 @@
 const Article = require("../models/Article");
+const Embedding = require("../models/Embedding");
+const { getTags, getEmbeddings } = require("./utilities");
 
 require("dotenv").config();
 
-async function getTags(articleData) {
-  const prompt = `${articleData.title}\n${articleData.content}`;
-
-  return await fetch(`${process.env.LLM_SERVER_URL}/generate-tags`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      prompt: prompt,
-    }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      return data.tags;
-    });
-}
-
-async function getTagsForQuery(prompt) {
-  return await fetch(`${process.env.LLM_SERVER_URL}/generate-tags`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      prompt: prompt,
-    }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      return data.tags;
-    });
-}
-
-async function getTaggedArticlesForQuery(requestTags) {
-  const articles = await Article.aggregate([
-    {
-      $addFields: {
-        matchedTagsCount: {
-          $size: {
-            $setIntersection: ["$tags", requestTags],
-          },
-        },
-      },
-    },
-    {
-      $match: {
-        matchedTagsCount: { $gt: 0 },
-      },
-    },
-    {
-      $sort: {
-        matchedTagsCount: -1,
-        upvotes: -1,
-      },
-    },
-    { $limit: 30 },
-  ]);
-
-  return articles;
-}
-
 async function searchArticles(req, res) {
   const q = req.query.q;
-  const tags = await getTagsForQuery(q);
-  const articles = await getTaggedArticlesForQuery(tags);
+  const queryEmbedding = await getEmbeddings(q);
+  const similarEmbeddings = await Embedding.aggregate([
+    {
+      $vectorSearch: {
+        // Name of the Atlas Vector Search index to use.
+        index: "embedding_index",
+        // Indexed vectorEmbedding type field to search.
+        path: "embedding",
+        // Array of numbers that represent the query vector.
+        // The array size must match the number of vector dimensions specified in the index definition for the field.
+        queryVector: queryEmbedding,
+        // Number of nearest neighbors to use during the search.
+        // Value must be less than or equal to (<=) 10000.
+        numCandidates: 50,
+        limit: 10,
+        // Any MQL match expression that compares an indexed field with a boolean,
+        // number (not decimals), or string to use as a prefilter.
+        filter: {},
+      },
+    },
+  ]);
+  const articleIds = similarEmbeddings.map((doc) => doc.articleId);
+  const articles = await Article.find({ _id: { $in: articleIds } });
   res.status(200).send({
     data: {
       articles: articles,
@@ -78,13 +37,22 @@ async function searchArticles(req, res) {
 }
 
 async function createArticle(req, res) {
-  req.body.tags = await getTags(req.body);
+  // req.body.tags = await getTags(req.body);
+  const embedding = await getEmbeddings(req.body);
   const article = new Article({
     author: req.user.username,
     ...req.body,
     images: req.files.map((file) => file.path),
   });
   await article.save();
+
+  const embeddingObj = new Embedding({
+    articleId: article._id,
+    embedding: embedding,
+  });
+
+  await embeddingObj.save();
+
   return res.status(200).send({
     data: article,
   });
