@@ -39,10 +39,6 @@ async function getTagsForQuery(prompt) {
 }
 
 async function getTaggedArticlesForQuery(requestTags) {
-  if (!Array.isArray(requestTags)) {
-    return res.status(400).json({ error: "tags must be an array" });
-  }
-
   const articles = await Article.aggregate([
     {
       $addFields: {
@@ -73,7 +69,6 @@ async function getTaggedArticlesForQuery(requestTags) {
 async function searchArticles(req, res) {
   const q = req.query.q;
   const tags = await getTagsForQuery(q);
-  console.log('tags for query: ', tags)
   const articles = await getTaggedArticlesForQuery(tags);
   res.status(200).send({
     data: {
