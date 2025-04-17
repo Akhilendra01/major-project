@@ -52,11 +52,19 @@ def generateTagsForPrompt(prompt):
         stop=STOP_TOKENS,
     )
 
-    print(output)
     raw_output = output["choices"][0]["text"]
     tags = [tag.strip().lower() for tag in raw_output.split(",") if tag.strip()]
 
     return tags
+
+
+def generateSupportTextFromArticles(articles):
+    text = ""
+    for idx, article in enumerate(articles):
+        text += (
+            f"{idx + 1}. Title: {article['title']}\nContent: {article['content']}\n\n"
+        )
+    return text
 
 
 # --------------------- Routes --------------------------
@@ -66,14 +74,16 @@ def generateTagsForPrompt(prompt):
 def home():
     return "✅ Phi-3 Mini Instruct API is up and running!"
 
-
 @app.route("/predict", methods=["POST"])
 async def predict():
-    def format_prompt(topic: str) -> str:
+    def format_prompt(topic: str, support_text: str) -> str:
         session_id = str(uuid.uuid4())[:8]
         return (
             "<|user|>\n"
-            f"Generate 5 different job interview questions without answers about: {topic}. Session: {session_id}\n"
+            f"You are an AI tutor. Generate 5 different and insightful job interview questions (without answers) "
+            f"about the topic: '{topic}'. Use the support material below to ensure relevance and depth.\n\n"
+            f"Support Articles:\n{support_text}\n\n"
+            f"Session ID: {session_id}\n"
             "<|end|>\n<|assistant|>"
         )
 
@@ -102,20 +112,21 @@ async def predict():
         prompt = data["prompt"].strip()
         tags = generateTagsForPrompt(prompt)
 
-        # Async HTTP request to fetch articles
         req_path = f'{os.environ.get("CONTENT_SERVER_URL")}/get-tagged-articles'
-        print(req_path)
+        access_token = os.environ.get("ACCESS_TOKEN")
+
         async with httpx.AsyncClient() as client:
             res = await client.post(
                 req_path,
                 json={"tags": tags},
-                headers={"Authorization": f'Bearer {os.environ.get('ACCESS_TOKEN')}'},
+                headers={"Authorization": f"Bearer {access_token}"},
             )
             articles = res.json().get("articles", [])
-            print("Fetched articles:", articles)
+
+        support_text = generateSupportTextFromArticles(articles)
 
         logger.info(f"Generating interview questions for topic: '{prompt}'")
-        full_prompt = format_prompt(prompt)
+        full_prompt = format_prompt(prompt, support_text)
 
         return Response(stream_response(full_prompt), content_type="text/plain")
 
