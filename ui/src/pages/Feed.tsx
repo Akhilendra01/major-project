@@ -97,7 +97,7 @@ function Feed() {
                 key={tag}
                 size="sm"
                 color="blue"
-                className="cursor-pointer hover:underline"
+                className="cursor-pointer hover:underline font-medium"
               >
                 {tag}
               </Badge>
