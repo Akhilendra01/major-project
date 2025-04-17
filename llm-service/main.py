@@ -56,14 +56,13 @@ def generateTagsForPrompt(prompt):
 
     return tags
 
+
 # --------------------- Routes --------------------------
 
 
 @app.route("/", methods=["GET"])
 def home():
     return "✅ Phi-3 Mini Instruct API is up and running!"
-
-
 
 
 @app.route("/predict", methods=["POST"])
@@ -104,7 +103,11 @@ async def predict():
         # Async HTTP request to fetch articles
         req_path = f'{os.environ.get("CONTENT_SERVER_URL")}/get-tagged-articles'
         async with httpx.AsyncClient() as client:
-            res = await client.post(req_path, json={"tags": tags})
+            res = await client.post(
+                req_path,
+                json={"tags": tags},
+                headers={"Authorization": f'Bearer {os.environ.get('ACCESS_TOKEN')}'},
+            )
             articles = res.json().get("articles", [])
             print("Fetched articles:", articles)
 
