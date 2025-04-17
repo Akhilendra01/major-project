@@ -24,14 +24,12 @@ app = Flask(__name__)
 # ------------------- Load Model Once -------------------
 logger.info("Loading Phi-3 Mini model...")
 llm = Llama(
-    model_path=MODEL_PATH,
-    n_ctx=N_CTX,
-    n_threads=N_THREADS,
-    n_gpu_layers=N_GPU_LAYERS
+    model_path=MODEL_PATH, n_ctx=N_CTX, n_threads=N_THREADS, n_gpu_layers=N_GPU_LAYERS
 )
 logger.info("Model loaded successfully.")
 
 # --------------------- Utilities -----------------------
+
 
 def format_prompt(topic: str) -> str:
     session_id = str(uuid.uuid4())[:8]
@@ -40,6 +38,7 @@ def format_prompt(topic: str) -> str:
         f"Generate 5 different job interview questions without answers about: {topic}. Session: {session_id}\n"
         "<|end|>\n<|assistant|>"
     )
+
 
 def stream_response(prompt: str):
     try:
@@ -50,7 +49,7 @@ def stream_response(prompt: str):
             top_p=TOP_P,
             repeat_penalty=REPEAT_PENALTY,
             stream=True,
-            stop=STOP_TOKENS
+            stop=STOP_TOKENS,
         ):
             token = response["choices"][0]["text"]
             yield token
@@ -58,14 +57,42 @@ def stream_response(prompt: str):
         logger.error(f"Error in model generation: {e}")
         yield "[ERROR] Model generation failed."
 
+
 # --------------------- Routes --------------------------
+
 
 @app.route("/", methods=["GET"])
 def home():
     return "✅ Phi-3 Mini Instruct API is up and running!"
 
+
 @app.route("/predict", methods=["POST"])
 def predict():
+    def format_prompt(topic: str) -> str:
+        session_id = str(uuid.uuid4())[:8]
+        return (
+            "<|user|>\n"
+            f"Generate 5 different job interview questions without answers about: {topic}. Session: {session_id}\n"
+            "<|end|>\n<|assistant|>"
+        )
+
+    def stream_response(prompt: str):
+        try:
+            for response in llm(
+                prompt,
+                max_tokens=MAX_TOKENS,
+                temperature=TEMPERATURE,
+                top_p=TOP_P,
+                repeat_penalty=REPEAT_PENALTY,
+                stream=True,
+                stop=STOP_TOKENS,
+            ):
+                token = response["choices"][0]["text"]
+                yield token
+        except Exception as e:
+            logger.error(f"Error in model generation: {e}")
+            yield "[ERROR] Model generation failed."
+
     try:
         data = request.get_json()
         if not data or "prompt" not in data:
@@ -80,6 +107,45 @@ def predict():
     except Exception as e:
         logger.exception("Unexpected error during prediction.")
         return jsonify({"error": "An internal server error occurred."}), 500
+
+
+@app.route("/generate-tags", methods=["POST"])
+def generateTags():
+    try:
+        data = request.get_json()
+        if not data or "prompt" not in data:
+            return jsonify({"error": "Invalid input. 'prompt' key is required."}), 400
+
+        content = data["prompt"].strip()
+        logger.info(f"Generating tags for content: '{content[:100]}...'")
+
+        tag_prompt = (
+            "<|user|>\n"
+            f"Generate a comma-separated list of 5 to 10 concise tags for the following post:\n\n{content}\n\n"
+            "All tags should be lowercase, relevant, and without hashtags.\n"
+            "<|end|>\n<|assistant|>"
+        )
+
+        output = llm(
+            tag_prompt,
+            max_tokens=128,
+            temperature=TEMPERATURE,
+            top_p=TOP_P,
+            repeat_penalty=REPEAT_PENALTY,
+            stop=STOP_TOKENS,
+        )
+
+        # 📦 Extract tags from model output
+        print(output)
+        raw_output = output["choices"][0]["text"]
+        tags = [tag.strip().lower() for tag in raw_output.split(",") if tag.strip()]
+
+        return jsonify({"tags": tags}), 200
+
+    except Exception as e:
+        logger.exception("Unexpected error during tag generation.")
+        return jsonify({"error": "An internal server error occurred."}), 500
+
 
 # ------------------- App Entry Point -------------------
 

@@ -3,7 +3,6 @@ import { Badge, Button, Card, Text } from "@mantine/core";
 
 import { Article as ArticleObject } from "src/interfaces";
 import ContentService from "src/services/ContentService";
-import { IconArrowUpFromArc } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
