@@ -21,7 +21,7 @@ export default function HeaderContent() {
         }}
       />
       <Title order={3} className="py-2 m-auto" align="center">
-        Placement Data Portal
+        Campus Portal
       </Title>
       {isLoggedIn && <HeaderDropdown />}
     </Header>
