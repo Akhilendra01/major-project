@@ -1,6 +1,7 @@
 import logging
 import uuid
 from flask import Flask, request, jsonify, Response
+import httpx
 import os, requests
 from llama_cpp import Llama
 
@@ -63,6 +64,8 @@ def home():
     return "✅ Phi-3 Mini Instruct API is up and running!"
 
 
+
+
 @app.route("/predict", methods=["POST"])
 async def predict():
     def format_prompt(topic: str) -> str:
@@ -95,17 +98,19 @@ async def predict():
         if not data or "prompt" not in data:
             return jsonify({"error": "Invalid input. 'prompt' key is required."}), 400
 
-        topic = data["prompt"].strip()
-        prompt=data["prompt"].strip()
-        tags=generateTagsForPrompt(prompt)
-        #fetch articles with most relevant tags from the database
-        req_path=f"{os.environ.get("CONTENT_SERVER_URL")}/get-tagged-articles"
-        articles=await requests.post(req_path, json={'tags': tags})
-        print(articles)
+        prompt = data["prompt"].strip()
+        tags = generateTagsForPrompt(prompt)
+
+        # Async HTTP request to fetch articles
+        req_path = f'{os.environ.get("CONTENT_SERVER_URL")}/get-tagged-articles'
+        async with httpx.AsyncClient() as client:
+            res = await client.post(req_path, json={"tags": tags})
+            articles = res.json().get("articles", [])
+            print("Fetched articles:", articles)
 
         logger.info(f"Generating interview questions for topic: '{prompt}'")
-
         full_prompt = format_prompt(prompt)
+
         return Response(stream_response(full_prompt), content_type="text/plain")
 
     except Exception as e:
