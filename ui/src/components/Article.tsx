@@ -23,7 +23,7 @@ function Article({ article }: { article: ArticleObject }) {
   };
 
   return (
-    <Card key={article._id} shadow="sm" padding="lg" radius="md" withBorder>
+    <Card key={article._id} shadow="sm" padding="md" radius="md" withBorder className="my-12">
       <div className="flex gap-3 items-center mb-3">
         <div>
           <Link to={`/@/${article.author}`} className="no-underline">
