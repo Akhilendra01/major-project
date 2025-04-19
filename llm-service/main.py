@@ -14,7 +14,7 @@ MODEL_PATH = "C:/Users/ankit/Downloads/phi-3-mini-4k-instruct-q4.gguf"
 N_CTX = 4096
 N_THREADS = 8
 N_GPU_LAYERS = -1
-MAX_TOKENS = 512
+MAX_TOKENS = 1024
 TEMPERATURE = 1.0
 TOP_P = 0.95
 REPEAT_PENALTY = 1.1
@@ -122,9 +122,10 @@ async def predict():
                 req_path,
                 headers={"Authorization": f'Bearer {os.environ.get("ACCESS_TOKEN")}'},
             )
-            articles = res.json().get("articles", [])
+            articles = res.json().get("data", {}).get("articles", [])
 
         support_text = generateSupportTextFromArticles(articles)
+
 
         logger.info(f"Generating interview questions for topic: '{prompt}'")
         full_prompt = format_prompt(prompt, support_text)
