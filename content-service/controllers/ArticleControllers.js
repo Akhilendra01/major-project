@@ -1,12 +1,12 @@
 const Article = require("../models/Article");
 const Embedding = require("../models/Embedding");
-const { getEmbeddings } = require("./utilities");
+const { getEmbeddings, getEmbeddingsForQuery } = require("./utilities");
 
 require("dotenv").config();
 
 async function searchArticles(req, res) {
   const q = req.query.q;
-  const queryEmbedding = await getEmbeddings(q);
+  const queryEmbedding = await getEmbeddingsForQuery(q);
   const similarEmbeddings = await Embedding.aggregate([
     {
       $vectorSearch: {
@@ -29,14 +29,17 @@ async function searchArticles(req, res) {
     { $project: { score: { $meta: "vectorSearchScore" }, articleId: 1 } },
   ]);
 
-  const articleIds = similarEmbeddings
-    .sort((a, b) => b.score - a.score)
-    .map((doc) => doc.articleId);
-  const articles = await Article.find({ _id: { $in: articleIds } }).sort({upvotes: -1});
-  
+  const articleIds = similarEmbeddings.map((doc) => doc.articleId);
+  console.log(similarEmbeddings)
+  const articles = await Article.find({ _id: { $in: articleIds } });
+  const articlesMap = new Map(
+    articles.map((article) => [article._id.toString(), article])
+  );
+  const sortedArticles = articleIds.map((id) => articlesMap.get(id.toString()));
+
   res.status(200).send({
     data: {
-      articles: articles,
+      articles: sortedArticles,
     },
   });
 }

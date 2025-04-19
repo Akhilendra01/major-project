@@ -20,6 +20,23 @@ async function getEmbeddings(articleData) {
     });
 }
 
+async function getEmbeddingsForQuery(prompt) {
+  return await fetch(`${process.env.GTE_SERVER_URL}/get-embeddings`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      prompt: prompt,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      return data.embedding;
+    });
+}
+
 module.exports = {
   getEmbeddings,
+  getEmbeddingsForQuery
 };
