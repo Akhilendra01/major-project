@@ -47,7 +47,7 @@ async function SignupController(req, res) {
     from: '"Campus Portal" <no-reply@campusportal.com>',
     to: email,
     subject: "Verify your email",
-    text: `Welcome! Please click the following link to verify your email: ${url}`,
+    text: `Welcome! Please click the following link to verify your email: ${verifyLink}`,
     html: `<p>Welcome!</p><p>Please click <a href="${verifyLink}">here</a> to verify your email.</p>`,
   });
 
