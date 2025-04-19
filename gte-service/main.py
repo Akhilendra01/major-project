@@ -14,6 +14,7 @@ print("Model loaded successfully")
 
 app = Flask(__name__)
 
+
 def generateEmbedding(prompt: str):
     inputs = tokenizer(
         prompt, return_tensors="pt", max_length=512, truncation=True, padding=True
@@ -21,10 +22,12 @@ def generateEmbedding(prompt: str):
 
     with torch.no_grad():
         outputs = model(**inputs)
-    embeddings = outputs.last_hidden_state
-    paragraph_embedding = embeddings.mean(dim=1)
 
-    return paragraph_embedding.squeeze().tolist()
+    cls_embedding = outputs.last_hidden_state[:, 0]  # [CLS] token
+    normalized = torch.nn.functional.normalize(cls_embedding, p=2, dim=1)  # L2 norm
+
+    return normalized.squeeze().tolist()
+
 
 @app.route("/get-embeddings", methods=["POST"])
 def getEmbeddings():
