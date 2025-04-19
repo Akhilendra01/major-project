@@ -122,9 +122,10 @@ async def predict():
                 req_path,
                 headers={"Authorization": f'Bearer {os.environ.get("ACCESS_TOKEN")}'},
             )
-            articles = res.json().get("articles", [])
+            articles = res.json().get("data", {}).get("articles", [])
 
         support_text = generateSupportTextFromArticles(articles)
+
 
         logger.info(f"Generating interview questions for topic: '{prompt}'")
         full_prompt = format_prompt(prompt, support_text)
