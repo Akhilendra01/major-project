@@ -66,10 +66,14 @@ def generateTagsForPrompt(prompt):
 def generateSupportTextFromArticles(articles):
     text = ""
     for idx, article in enumerate(articles):
-        text += (
-            f"{idx + 1}. Title: {article['title']}\nContent: {article['content']}\n\n"
-        )
+        if article is not None:
+            text += (
+                f"{idx + 1}. Title: {article['title']}\nContent: {article['content']}\n\n"
+            )
     return text
+
+
+
 
 
 # --------------------- Routes --------------------------
@@ -81,13 +85,28 @@ def home():
 
 @app.route("/predict", methods=["POST"])
 async def predict():
-    def format_prompt(topic: str, support_text: str) -> str:
+    def format_prompt(query: str, context: str = "") -> str:
         session_id = str(uuid.uuid4())[:8]
         return (
             "<|user|>\n"
-            f"You are an AI tutor. Generate 5 different and insightful job interview questions (without answers) "
-            f"about the topic: '{topic}'. Use the support material below to ensure relevance and depth.\n\n"
-            f"Support Articles:\n{support_text}\n\n"
+            "You are a technical assistant powered by Microsoft Phi-3, specialized in software engineering.\n\n"
+            "Your capabilities include:\n"
+            "- Writing and reviewing code\n"
+            "- Debugging and troubleshooting\n"
+            "- System design and architecture\n"
+            "- Best practices and design patterns\n"
+            "- Performance optimization\n"
+            "- Code refactoring suggestions\n\n"
+            "Guidelines:\n"
+            "- Provide clear, concise, and technically accurate responses\n"
+            "- Include code examples when relevant\n"
+            "- Suggest best practices and potential improvements\n"
+            "- Explain complex concepts in an understandable way\n"
+            "- Focus on practical, implementable solutions\n\n"
+            "- Ignore context for general questions like greetings\n\n"
+
+            f"User Query: {query}\n"
+            f"Context:\n{context}\n"
             f"Session ID: {session_id}\n"
             "<|end|>\n<|assistant|>"
         )
@@ -124,12 +143,13 @@ async def predict():
                 headers={"Authorization": f'Bearer {os.environ.get("ACCESS_TOKEN")}'},
             )
             articles = res.json().get("data", {}).get("articles", [])
+            print(articles)
 
         support_text = generateSupportTextFromArticles(articles)
 
 
         logger.info(f"Generating interview questions for topic: '{prompt}'")
-        full_prompt = format_prompt(prompt, support_text)
+        full_prompt = format_prompt(prompt, support_text[:512])
         logger.info(f"Full prompt: '{full_prompt}'")
         return Response(stream_response(full_prompt), content_type="text/plain")
 
