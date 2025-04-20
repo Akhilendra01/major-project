@@ -232,10 +232,12 @@ def judgeResume():
             overall_score = 0
 
         return jsonify({
-            "success": True,
-            "analysis": {
-                "overall_score": overall_score,
-                "detailed_feedback": raw_output,
+            "data":{
+                "success": True,
+                "analysis": {
+                    "overall_score": overall_score,
+                    "detailed_feedback": raw_output,
+                }
             }
         }), 200
 
