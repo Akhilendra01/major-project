@@ -195,16 +195,22 @@ def judgeResume():
 
         judge_prompt = (
             "<|user|>\n"
-            "Evaluate the following resume professionally. Provide detailed feedback in the following format:\n\n"
+            "Evaluate the following entry-level resume professionally. Provide a detailed and constructive review in the following format:\n\n"
             "1. Overall Score (1-10)\n"
             "2. Key Strengths (bullet points)\n"
             "3. Areas for Improvement (bullet points)\n"
             "4. Format and Presentation (score 1-10)\n"
-            "5. Content Quality (score 1-10)\n"
-            "6. Professional Impact (score 1-10)\n\n"
+            "5. Academic Foundation (score 1-10)\n"
+            "6. Projects and Internships (score 1-10)\n"
+            "7. Skill Presentation (score 1-10)\n"
+            "8. Initiative and Extra Effort (score 1-10)\n"
+            "9. Communication and Tone (score 1-10)\n"
+            "10. ATS Readiness (score 1-10)\n"
+            "11. Summary Gap Analysis (3–5 bullet points suggesting specific improvements for an entry-level resume)\n\n"
             f"Resume:\n{resume_text}\n"
             "<|end|>\n<|assistant|>"
         )
+
 
         output = llm(
             judge_prompt,

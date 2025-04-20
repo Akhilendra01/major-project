@@ -3,6 +3,7 @@ import {
   AiOutlineOrderedList,
   AiOutlineSearch,
   AiOutlineWechat,
+  AiOutlineGlobal,
 } from "react-icons/ai";
 import { Auth, State } from "src/context";
 import { Button, Navbar } from "@mantine/core";
@@ -26,6 +27,7 @@ const links = [
   },
   { label: "Chat", icon: <AiOutlineWechat />, to: "/chat", admin: false },
   { label: "Search", icon: <AiOutlineSearch />, to: "/search", admin: false },
+  { label: "Off Campus", icon: <AiOutlineGlobal />, to: "/offcampus", admin: false },
 ];
 
 export default function NavbarContent() {

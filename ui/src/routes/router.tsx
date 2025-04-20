@@ -11,6 +11,7 @@ const Search = React.lazy(() => import("src/pages/Search"));
 const NotFound = React.lazy(() => import("src/pages/NotFound"));
 const AdminAction = React.lazy(() => import("src/pages/AdminAction"));
 const Feed = React.lazy(() => import("src/pages/Feed"));
+const OffCampus = React.lazy(() => import("src/pages/OffCampus"));
 
 export default function Router() {
   return (
@@ -64,6 +65,14 @@ export default function Router() {
           element={
             <RequiredLogin>
               <Feed />
+            </RequiredLogin>
+          }
+        />
+        <Route
+          path="/offcampus"
+          element={
+            <RequiredLogin>
+              <OffCampus />
             </RequiredLogin>
           }
         />
