@@ -2,7 +2,8 @@ import logging
 import uuid
 from flask import Flask, request, jsonify, Response
 import httpx
-import os, requests
+import os, requests, io
+import PyPDF2
 from llama_cpp import Llama
 from dotenv import load_dotenv
 from urllib.parse import quote
@@ -172,6 +173,75 @@ def generateTags():
     except Exception as e:
         logger.exception("Unexpected error during tag generation.")
         return jsonify({"error": "An internal server error occurred."}), 500
+    
+@app.route("/judge-resume", methods=["POST"])
+def judgeResume():
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+        
+        file = request.files['file']
+        if file.filename == '' or not file.filename.endswith('.pdf'):
+            return jsonify({"error": "Invalid file. Please upload a PDF"}), 400
+
+        # Read PDF and extract text
+        pdf_reader = PyPDF2.PdfReader(io.BytesIO(file.read()))
+        resume_text = ""
+        for page in pdf_reader.pages:
+            resume_text += page.extract_text()
+
+        resume_text = resume_text.strip()
+        logger.info(f"Analyzing resume: '{resume_text[:100]}...'")
+
+        judge_prompt = (
+            "<|user|>\n"
+            "Evaluate the following entry-level resume professionally. Provide a detailed and constructive review in the following format:\n\n"
+            "1. Overall Score (1-10)\n"
+            "2. Key Strengths (bullet points)\n"
+            "3. Areas for Improvement (bullet points)\n"
+            "4. Format and Presentation (score 1-10)\n"
+            "5. Academic Foundation (score 1-10)\n"
+            "6. Projects and Internships (score 1-10)\n"
+            "7. Skill Presentation (score 1-10)\n"
+            "8. Initiative and Extra Effort (score 1-10)\n"
+            "9. Communication and Tone (score 1-10)\n"
+            "10. ATS Readiness (score 1-10)\n"
+            "11. Summary Gap Analysis (3–5 bullet points suggesting specific improvements for an entry-level resume)\n\n"
+            f"Resume:\n{resume_text}\n"
+            "<|end|>\n<|assistant|>"
+        )
+
+
+        output = llm(
+            judge_prompt,
+            max_tokens=512,  # Increased for detailed response
+            temperature=TEMPERATURE,
+            top_p=TOP_P,
+            repeat_penalty=REPEAT_PENALTY,
+            stop=STOP_TOKENS,
+        )
+
+        raw_output = output["choices"][0]["text"]
+        
+        # Parse the structured feedback
+        feedback_sections = raw_output.split('\n\n')
+        
+        try:
+            overall_score = int(feedback_sections[0].split(':')[-1].strip())
+        except:
+            overall_score = 0
+
+        return jsonify({
+            "success": True,
+            "analysis": {
+                "overall_score": overall_score,
+                "detailed_feedback": raw_output,
+            }
+        }), 200
+
+    except Exception as e:
+        logger.exception("Error during resume analysis")
+        return jsonify({"error": str(e)}), 500
 
 
 # ------------------- App Entry Point -------------------

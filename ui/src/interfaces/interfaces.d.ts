@@ -119,3 +119,16 @@ export interface VoteResponse{
   upvotes: number;
   downvotes: number;
 }
+
+export interface JobListing {
+  _id: string;
+  companyName: string;
+  title: string;
+  location: string;
+  imageUrl: string;
+  type: string;
+  salary: string;
+  redirectLink: string;
+  requiredExperience: string;
+  skills: string;
+}
