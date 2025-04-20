@@ -132,3 +132,10 @@ export interface JobListing {
   requiredExperience: string;
   skills: string;
 }
+
+export interface AnalyseResumeResponse {
+  analysis: {
+    overall_score: string;
+    detailed_feedback: string;
+  };
+}

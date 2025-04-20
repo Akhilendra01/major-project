@@ -1,6 +1,7 @@
 import { Button, Group, Text, rem } from "@mantine/core";
 import { IconPdf, IconUpload, IconX } from "@tabler/icons-react";
 
+import { AnalyseResumeResponse } from "src/interfaces";
 import { Dropzone } from "@mantine/dropzone";
 import LlmService from "src/services/LlmService";
 import { useMediaQuery } from "@mantine/hooks";
@@ -50,15 +51,14 @@ function formatLLMOutput(text: string): string {
 function ResumeAnalyser() {
   const [file, setFile] = useState<File | null>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<any | null>(null);
+  const [data, setData] = useState<AnalyseResumeResponse>();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   const handleSubmit = async () => {
     if (file) {
       setLoading(true);
       const response = await LlmService.analyseResume(file);
-      setData(response);
-      console.log(response);
+      setData(response.data);
       setLoading(false);
     }
   };
