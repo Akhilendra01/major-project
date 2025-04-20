@@ -7,6 +7,7 @@ import {
 import { Auth, State } from "src/context";
 import { Button, Navbar } from "@mantine/core";
 
+import { IconAnalyzeFilled } from "@tabler/icons-react";
 import Navlink from "src/components/appshell/Navlink";
 import { useContext } from "react";
 import { useNavigate } from "react-router";
@@ -26,6 +27,7 @@ const links = [
   },
   { label: "Chat", icon: <AiOutlineWechat />, to: "/chat", admin: false },
   { label: "Search", icon: <AiOutlineSearch />, to: "/search", admin: false },
+  { label: "Resume", icon: <IconAnalyzeFilled />, to: "/analyse-resume", admin: false },
 ];
 
 export default function NavbarContent() {
