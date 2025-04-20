@@ -1,14 +1,30 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { LoginForm, SignupForm } from "src/components/forms";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { Auth } from "src/context";
+import AuthService from "src/services/AuthService";
 import { useNavigate } from "react-router";
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const { isLoggedIn } = useContext(Auth);
+  const { isLoggedIn, setUser } = useContext(Auth);
   const [showForm, setShowForm] = useState<"login" | "signup" | null>(null);
+
+  const token=localStorage.getItem("token")
+
+  const validate=async()=>{
+    const response=await AuthService.validateToken();
+    if(response.data.user){
+      navigate("/feed");
+      setUser(response.data.user);
+    }
+  }
+
+  useEffect(()=>{
+    if(!token)return;
+    validate();
+  })
 
   if (isLoggedIn) {
     navigate("/dashboard");
