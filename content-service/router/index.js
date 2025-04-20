@@ -46,7 +46,6 @@ router.post(
   profilePhotoUpload.single("avatar"),
   updateAvatar
 );
-router.post("/get-tagged-articles", getTaggedArticles);
 
 router.put("/update-profile", updateProfile);
 
