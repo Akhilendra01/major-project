@@ -1,6 +1,7 @@
 import {
   ApiResponse,
   Article,
+  CreateArticleRequest,
   CreatePostRequest,
   EmptyResponse,
   Profile,
@@ -46,9 +47,9 @@ class ContentService {
     postValues: CreatePostRequest
   ): Promise<ApiResponse<EmptyResponse>> {
     const formData = new FormData();
-    formData.append("title", postValues.title);
-    formData.append("content", postValues.content);
-    formData.append("tags", JSON.stringify(postValues.tags));
+    formData.append("companyName", postValues.companyName);
+    formData.append("jobDescription", postValues.jobDescription);
+    formData.append("applyLink", JSON.stringify(postValues.applyLink));
     if (postValues.images) {
       for (let i = 0; i < postValues.images.length; i++) {
         formData.append("images", postValues.images[i]);
@@ -58,7 +59,7 @@ class ContentService {
   }
 
   static async createArticle(
-    createPostRequest: CreatePostRequest
+    createPostRequest: CreateArticleRequest
   ): Promise<ApiResponse<Article>> {
     const formData = new FormData();
     formData.append("title", createPostRequest.title);

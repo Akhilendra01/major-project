@@ -39,10 +39,10 @@ export type SetProfileData=Dispatch<SetStateAction<UserData>>
 
 
 export interface CreatePostRequest {
-  title: string | "";
-  content: string | "";
-  tags: string[];
-  images: File[] | null | undefined;
+  companyName: string;
+  jobDescription: string;
+  applyLink: string;
+  images: File[];
 }
 
 export interface CreateArticleRequest {

@@ -4,10 +4,10 @@ async function createPost(req, res) {
   const user = req.user;
   const post = new Post({
     author: user.username,
-    title: req.body.title,
-    content: req.body.content,
+    companyName: req.body.companyName,
+    jobDescription: req.body.jobDescription,
     images: req.files.map((file) => file.path),
-    tags: JSON.parse(req.body.tags),
+    applyLink: req.body.applyLink,
   });
 
   await post.save();

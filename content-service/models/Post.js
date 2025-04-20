@@ -5,34 +5,27 @@ const postSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-
-  title: {
+  companyName: {
     type: String,
     required: true,
   },
-
-  content: {
+  jobDescription: {
     type: String,
     required: true,
   },
-  images:{
-    type: [String],
-    default: []
+  applyLink: {
+    type: String,
+    required: true,
   },
-  tags:{
+  images: {
     type: [String],
-    default: [] 
+    default: [],
   },
-  
+
   timestamp: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
-
-  impressions: {
-    type: Number,
-    default: 0
-  }
 });
 
 module.exports = mongoose.model("post", postSchema);

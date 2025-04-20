@@ -24,33 +24,16 @@ function CreatePost() {
   const [loading, setLoading] = useState(false);
   const form = useForm<CreatePostRequest>({
     initialValues: {
-      title: "",
-      content: "",
-      tags: [],
-      images: null,
+      companyName: "",
+      jobDescription: "",
+      applyLink: "",
+      images: [],
     },
   });
 
-  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const newTag = e.currentTarget.value.trim();
-      if (newTag && !form.values.tags?.includes(newTag)) {
-        form.setFieldValue("tags", [...form.values.tags||[], newTag]);
-        e.currentTarget.value = "";
-      }
-    }
-  };
-
-  const removeTag = (tagToRemove: string) => {
-    form.setFieldValue(
-      "tags",
-      form.values.tags?.filter((tag) => tag !== tagToRemove)
-    );
-  };
-
   const handleSubmit = async (values: CreatePostRequest) => {
     setLoading(true);
+    console.log(values);
     await ContentService.createPost(values)
       .then((response) => {
         console.log(response);
@@ -71,50 +54,30 @@ function CreatePost() {
       className={`bg-white ${isMobile ? "w-full" : "w-6/12"} mx-auto py-4`}
     >
       <Title order={4} className="mb-4 text-center">
-        Create New Post
+        Post a job
       </Title>
-      <form
-        onSubmit={form.onSubmit(handleSubmit)}
-        className="space-y-4"
-      >
+      <form onSubmit={form.onSubmit(handleSubmit)} className="space-y-4">
         <TextInput
-          label="Title"
-          placeholder="Enter post title"
-          {...form.getInputProps("title")}
+          label="Company name"
+          placeholder="Enter company name"
+          {...form.getInputProps("companyName")}
           required
         />
 
+        <TextInput
+          label="Apply Link"
+          placeholder="Enter the...."
+          {...form.getInputProps("applyLink")}
+          required
+        />
         <Textarea
-          label="Content"
+          label="Job Description"
           minRows={5}
-          placeholder="Your content goes here...."
-          {...form.getInputProps("content")}
+          placeholder="Give brief description for the job...."
+          {...form.getInputProps("jobDescription")}
           required
         />
 
-        <div>
-          <TextInput
-            label="Tags"
-            placeholder="Type a tag and press Enter"
-            onKeyDown={handleTagKeyDown}
-          />
-          <div className="flex flex-wrap gap-2 mt-2">
-            {form.values.tags && form.values.tags.map((tag) => (
-              <Badge
-                key={tag}
-                rightSection={
-                  <CloseButton
-                    onClick={() => removeTag(tag)}
-                    size="xs"
-                    style={{ marginLeft: 5 }}
-                  />
-                }
-              >
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        </div>
         <Dropzone
           multiple={true}
           onDrop={(files) => {
@@ -157,7 +120,7 @@ function CreatePost() {
                   onClick={() => {
                     form.setFieldValue(
                       "images",
-                      form.values.images?.filter((f) => f.name !== file.name)
+                      form.values.images.filter((f) => f.name !== file.name)
                     );
                   }}
                   size="xs"
