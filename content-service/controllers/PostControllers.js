@@ -43,7 +43,6 @@ async function getPostForFeed(req, res) {
     const page = parseInt(req.query.page) || 1;
     const pageSize = 10;
     const skip = (page - 1) * pageSize;
-    console.log(await Post.find({}));
     const posts = await Post.find()
       .sort({ createdAt: -1 })
       .skip(skip)
