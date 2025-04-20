@@ -18,6 +18,10 @@ export interface AuthProps {
 export interface StateProps {
   opened: boolean;
   setOpened: Dispatch<SetStateAction<boolean>>;
+  articles: Article[];
+  setArticles: Dispatch<SetStateAction<Article[]>>;
+  jobPosts: JobPostObj[];
+  setJobPosts: Dispatch<SetStateAction<JobPostObj[]>>;
 }
 
 interface UserData {
@@ -39,10 +43,10 @@ export type SetProfileData=Dispatch<SetStateAction<UserData>>
 
 
 export interface CreatePostRequest {
-  title: string | "";
-  content: string | "";
-  tags: string[];
-  images: File[] | null | undefined;
+  companyName: string;
+  jobDescription: string;
+  applyLink: string;
+  images: File[];
 }
 
 export interface CreateArticleRequest {
@@ -63,6 +67,21 @@ export interface Article{
   _id: string;
   upvotes: number;
   downvotes: number;
+}
+
+export interface JobPost{
+  companyName: string;
+  applyLink: string;
+  jobDescription: string;
+  images: File[]| null;
+}
+
+export interface JobPostObj {
+  _id: string;
+  companyName: string;
+  applyLink: string;
+  jobDescription: string;
+  images: string[] | null;
 }
 
 export interface EmptyResponse{

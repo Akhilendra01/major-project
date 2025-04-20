@@ -1,8 +1,10 @@
 import {
   ApiResponse,
   Article,
+  CreateArticleRequest,
   CreatePostRequest,
   EmptyResponse,
+  JobPostObj,
   Profile,
   ProfileFormValues,
   ProfileResponse,
@@ -46,9 +48,9 @@ class ContentService {
     postValues: CreatePostRequest
   ): Promise<ApiResponse<EmptyResponse>> {
     const formData = new FormData();
-    formData.append("title", postValues.title);
-    formData.append("content", postValues.content);
-    formData.append("tags", JSON.stringify(postValues.tags));
+    formData.append("companyName", postValues.companyName);
+    formData.append("jobDescription", postValues.jobDescription);
+    formData.append("applyLink", JSON.stringify(postValues.applyLink));
     if (postValues.images) {
       for (let i = 0; i < postValues.images.length; i++) {
         formData.append("images", postValues.images[i]);
@@ -58,7 +60,7 @@ class ContentService {
   }
 
   static async createArticle(
-    createPostRequest: CreatePostRequest
+    createPostRequest: CreateArticleRequest
   ): Promise<ApiResponse<Article>> {
     const formData = new FormData();
     formData.append("title", createPostRequest.title);
@@ -78,6 +80,11 @@ class ContentService {
   ): Promise<ApiResponse<Article[]>> {
     return await this.apiService.get<Article[]>(`feed?page=${page}`);
   }
+  static async getJobPostsForFeed(
+    page: number
+  ): Promise<ApiResponse<JobPostObj[]>> {
+    return await this.apiService.get<JobPostObj[]>(`feed-jobposts?page=${page}`);
+  }
 
   static async getTrendingTags(): Promise<ApiResponse<string[]>> {
     return await this.apiService.get<string[]>(`get-trending-tags`);
@@ -93,8 +100,12 @@ class ContentService {
     return await this.apiService.get<VoteResponse>(`downvote/${id}`);
   }
 
-  static async searchArticles(query: string): Promise<ApiResponse<{articles: Article[]}>> {
-    return await this.apiService.get<{articles: Article[]}>(`search-articles?q=${query}`);
+  static async searchArticles(
+    query: string
+  ): Promise<ApiResponse<{ articles: Article[] }>> {
+    return await this.apiService.get<{ articles: Article[] }>(
+      `search-articles?q=${query}`
+    );
   }
 }
 

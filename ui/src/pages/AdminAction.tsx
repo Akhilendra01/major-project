@@ -10,13 +10,13 @@ function AdminAction() {
     <div className="p-2">
       <Select
         placeholder="Select"
-        data={["Select", "Create New Post", "Upload Data", "Others..."]}
+        data={["Select", "Post a job", "Upload Data", "Others..."]}
         onChange={(value) => {
           setForm(value || "");
         }}
         className={`bg-white ${isMobile ? "max-w-md" : "w-6/12"} mx-auto py-4`}
       />
-      {form === "Create New Post" && <CreatePost />}
+      {form === "Post a job" && <CreatePost />}
     </div>
   );
 }
