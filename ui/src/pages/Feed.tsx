@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import ArticleScroll from "src/components/ArticleScroll";
 import ContentService from "src/services/ContentService";
 import CreateArticleBox from "src/components/CreateArticleBox";
+import JobPostScroll from "src/components/JobpostScroll";
 import { UserBadge } from "src/interfaces";
 import { useMediaQuery } from "@mantine/hooks";
 
@@ -20,6 +21,7 @@ function Feed() {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [tags, setTags] = useState<string[]>([]);
   const [followRecommend, setFollowRecommend] = useState<UserBadge[]>([]);
+  const [show, setShow]=useState<string>("articles");
 
   const loadTrendingTags = async () => {
     setTags((await ContentService.getTrendingTags()).data);
@@ -40,7 +42,12 @@ function Feed() {
       {/* Center Feed */}
       <div className={`${isMobile ? "w-full" : "w-[600px]"} space-y-6`}>
         <CreateArticleBox/>
-        <ArticleScroll />
+        <div className="w-full flex flex-row justify-around">
+          <Badge className="cursor-pointer" onClick={()=>setShow("articles")}>Articles</Badge>
+          <Badge className="cursor-pointer" onClick={()=>setShow("jobposts")}>Job Posts</Badge>
+        </div>
+        {show=="articles" && <ArticleScroll />}
+        {show=="jobposts" && <JobPostScroll />}
       </div>
 
       {/* Right Sidebar */}

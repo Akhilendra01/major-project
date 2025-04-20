@@ -4,6 +4,7 @@ import {
   CreateArticleRequest,
   CreatePostRequest,
   EmptyResponse,
+  JobPostObj,
   Profile,
   ProfileFormValues,
   ProfileResponse,
@@ -79,6 +80,11 @@ class ContentService {
   ): Promise<ApiResponse<Article[]>> {
     return await this.apiService.get<Article[]>(`feed?page=${page}`);
   }
+  static async getJobPostsForFeed(
+    page: number
+  ): Promise<ApiResponse<JobPostObj[]>> {
+    return await this.apiService.get<JobPostObj[]>(`feed-jobposts?page=${page}`);
+  }
 
   static async getTrendingTags(): Promise<ApiResponse<string[]>> {
     return await this.apiService.get<string[]>(`get-trending-tags`);
@@ -94,8 +100,12 @@ class ContentService {
     return await this.apiService.get<VoteResponse>(`downvote/${id}`);
   }
 
-  static async searchArticles(query: string): Promise<ApiResponse<{articles: Article[]}>> {
-    return await this.apiService.get<{articles: Article[]}>(`search-articles?q=${query}`);
+  static async searchArticles(
+    query: string
+  ): Promise<ApiResponse<{ articles: Article[] }>> {
+    return await this.apiService.get<{ articles: Article[] }>(
+      `search-articles?q=${query}`
+    );
   }
 }
 

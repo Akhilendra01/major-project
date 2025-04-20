@@ -20,8 +20,8 @@ export interface StateProps {
   setOpened: Dispatch<SetStateAction<boolean>>;
   articles: Article[];
   setArticles: Dispatch<SetStateAction<Article[]>>;
-  jobPosts: JobPost[];
-  setJobPosts: Dispatch<SetStateAction<JobPost[]>>;
+  jobPosts: JobPostObj[];
+  setJobPosts: Dispatch<SetStateAction<JobPostObj[]>>;
 }
 
 interface UserData {
@@ -74,6 +74,14 @@ export interface JobPost{
   applyLink: string;
   jobDescription: string;
   images: File[]| null;
+}
+
+export interface JobPostObj {
+  _id: string;
+  companyName: string;
+  applyLink: string;
+  jobDescription: string;
+  images: string[] | null;
 }
 
 export interface EmptyResponse{

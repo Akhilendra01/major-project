@@ -38,8 +38,26 @@ async function deletePost(req, res) {
   }
 }
 
+async function getPostForFeed(req, res) {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = 10;
+    const skip = (page - 1) * pageSize;
+    console.log(await Post.find({}));
+    const posts = await Post.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(pageSize);
+
+    res.status(200).json(posts);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching articles" });
+  }
+}
+
 module.exports = {
   createPost,
   getPost,
   deletePost,
+  getPostForFeed
 };

@@ -14,6 +14,7 @@ const {
   createPost,
   deletePost,
   getPost,
+  getPostForFeed,
 } = require("../controllers/PostControllers");
 
 const { getConstants } = require("../controllers/ConstantControllers");
@@ -54,6 +55,7 @@ router.get("/constants", getConstants);
 router.get("/get-articles", getArticles);
 router.get("/get-profile/:username", getProfile);
 router.get("/feed", getArticleForFeed);
+router.get("/feed-jobposts", getPostForFeed);
 router.get("/get-trending-tags", getTrendingTags);
 router.get("/get-follow-recommendations", getFollowRecommendation);
 router.get("/upvote/:id", upvote);

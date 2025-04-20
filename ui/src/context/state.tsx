@@ -1,4 +1,4 @@
-import { Article, JobPost } from "src/interfaces";
+import { Article, JobPostObj } from "src/interfaces";
 import { createContext, useState } from "react";
 
 import { StateProps } from "src/interfaces";
@@ -19,7 +19,7 @@ export default function StateProvider({
 }) {
   const [opened, setOpened] = useState<boolean>(false);
   const [articles, setArticles] = useState<Article[]>([]);
-  const [jobPosts, setJobPosts] = useState<JobPost[]>([]);
+  const [jobPosts, setJobPosts] = useState<JobPostObj[]>([]);
   return (
     <State.Provider
       value={{
