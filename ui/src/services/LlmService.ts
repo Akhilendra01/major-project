@@ -1,3 +1,5 @@
+import { ApiResponse } from "src/interfaces";
+
 class LlmService {
   static async predict(prompt: string, onData: (chunk: string) => void) {
     const response = await fetch(
@@ -23,6 +25,30 @@ class LlmService {
       const chunk = decoder.decode(value, { stream: true });
       accumulatedText += chunk;
       onData(accumulatedText);
+    }
+  }
+  static async analyseResume(resumePdf: File): Promise<ApiResponse<Record<any, any>>> {
+    const formData = new FormData();
+    formData.append("file", resumePdf);
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_LLM_SERVICE}/judge-resume`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const result = await response.json();
+      return result;
+
+    } catch (error) {
+      return {
+        status: 500,
+        data: {},
+        message: "An error occurred while analyzing resume",
+      };
     }
   }
 }

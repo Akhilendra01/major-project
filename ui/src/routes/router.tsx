@@ -11,13 +11,12 @@ const Search = React.lazy(() => import("src/pages/Search"));
 const NotFound = React.lazy(() => import("src/pages/NotFound"));
 const AdminAction = React.lazy(() => import("src/pages/AdminAction"));
 const Feed = React.lazy(() => import("src/pages/Feed"));
+const ResumeAnalyser = React.lazy(() => import("src/pages/ResumeAnalyser"));
 const OffCampus = React.lazy(() => import("src/pages/OffCampus"));
 
 export default function Router() {
   return (
-    <React.Suspense
-      fallback={<Loader/>}
-    >
+    <React.Suspense fallback={<Loader />}>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route
@@ -65,6 +64,14 @@ export default function Router() {
           element={
             <RequiredLogin>
               <Feed />
+            </RequiredLogin>
+          }
+        />
+        <Route
+          path="/analyse-resume"
+          element={
+            <RequiredLogin>
+              <ResumeAnalyser />
             </RequiredLogin>
           }
         />
