@@ -18,6 +18,10 @@ export interface AuthProps {
 export interface StateProps {
   opened: boolean;
   setOpened: Dispatch<SetStateAction<boolean>>;
+  articles: Article[];
+  setArticles: Dispatch<SetStateAction<Article[]>>;
+  jobPosts: JobPost[];
+  setJobPosts: Dispatch<SetStateAction<JobPost[]>>;
 }
 
 interface UserData {
@@ -63,6 +67,13 @@ export interface Article{
   _id: string;
   upvotes: number;
   downvotes: number;
+}
+
+export interface JobPost{
+  companyName: string;
+  applyLink: string;
+  jobDescription: string;
+  images: File[]| null;
 }
 
 export interface EmptyResponse{

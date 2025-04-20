@@ -11,22 +11,19 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 
-import { Article } from "src/interfaces";
 import ContentService from "src/services/ContentService";
 import { IconPhoto } from "@tabler/icons-react";
+import { State } from "src/context";
 
-function CreateArticleBox({
-  setArticles,
-}: {
-  setArticles: React.Dispatch<React.SetStateAction<Article[]>>;
-}) {
+function CreateArticleBox() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const { setArticles } = useContext(State);
 
   const openRef = useRef<() => void>(null);
 
@@ -104,11 +101,11 @@ function CreateArticleBox({
               </Badge>
             ))}
           </div>
-            <TextInput
-              label="Tags"
-              placeholder="Type a tag and press Enter"
-              onKeyDown={handleTagKeyDown}
-            />
+          <TextInput
+            label="Tags"
+            placeholder="Type a tag and press Enter"
+            onKeyDown={handleTagKeyDown}
+          />
         </div>
 
         {/* Hidden Dropzone for image upload */}

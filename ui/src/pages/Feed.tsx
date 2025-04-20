@@ -1,55 +1,25 @@
-import { Article as ArticleObject, UserBadge } from "src/interfaces";
 import {
   Avatar,
   Badge,
   Button,
   Card,
   Group,
-  Loader,
   Stack,
   Text,
   Title,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 
-import Article from "src/components/Article";
+import ArticleScroll from "src/components/ArticleScroll";
 import ContentService from "src/services/ContentService";
 import CreateArticleBox from "src/components/CreateArticleBox";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { UserBadge } from "src/interfaces";
 import { useMediaQuery } from "@mantine/hooks";
 
 function Feed() {
   const isMobile = useMediaQuery("(max-width: 768px)");
-
-  const [articles, setArticles] = useState<ArticleObject[]>([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [tags, setTags] = useState<string[]>([]);
   const [followRecommend, setFollowRecommend] = useState<UserBadge[]>([]);
-
-  const fetchArticles = async (pageNum: number) => {
-    setIsLoading(true);
-    try {
-      const response = await ContentService.getArticlesForFeed(pageNum);
-      return Array.isArray(response) ? response : [];
-    } catch (err) {
-      setError("Failed to load articles");
-      console.error("Error fetching articles:", err);
-      return [];
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const loadMoreArticles = async () => {
-    if (isLoading || !hasMore) return;
-    const newArticles = await fetchArticles(page);
-    setArticles((prev) => [...prev, ...newArticles]);
-    setHasMore(newArticles.length > 0);
-    setPage((prev) => prev + 1);
-  };
 
   const loadTrendingTags = async () => {
     setTags((await ContentService.getTrendingTags()).data);
@@ -60,7 +30,6 @@ function Feed() {
   };
 
   useEffect(() => {
-    loadMoreArticles();
     loadTrendingTags();
     loadFollowRecommend();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -70,20 +39,8 @@ function Feed() {
     <div className="flex w-full justify-center px-4 py-6 gap-6">
       {/* Center Feed */}
       <div className={`${isMobile ? "w-full" : "w-[600px]"} space-y-6`}>
-        <CreateArticleBox setArticles={setArticles} />
-        {error && <Text color="red">{error}</Text>}
-
-        <InfiniteScroll
-          dataLength={articles.length}
-          next={loadMoreArticles}
-          hasMore={hasMore}
-          loader={<Loader size="sm" />}
-          endMessage={<Text color="dimmed">No more articles</Text>}
-        >
-          {articles.map((article) => (
-            <Article key={article._id} article={article} />
-          ))}
-        </InfiniteScroll>
+        <CreateArticleBox/>
+        <ArticleScroll />
       </div>
 
       {/* Right Sidebar */}
