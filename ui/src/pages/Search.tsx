@@ -18,7 +18,6 @@ export default function Search() {
     console.log("Searching for:", query);
     setLoading(true);
     const res = await ContentService.searchArticles(query);
-    console.log(res.data.articles);
     setArticles(res.data.articles);
     setLoading(false);
   };
@@ -42,9 +41,10 @@ export default function Search() {
       </div>
       {loading && <Loader />}
       <div className={`pd-4 mx-auto ${isMobile ? "w-11/12" : "w-3/4"}`}>
-        {articles.map((article) => (
-          <Article key={article._id} article={article} />
-        ))}
+        {articles.map(
+          (article) =>
+            article && <Article key={article._id} article={article} />
+        )}
       </div>
     </>
   );

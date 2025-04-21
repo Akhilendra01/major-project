@@ -29,7 +29,8 @@ async function searchArticles(req, res) {
     { $project: { score: { $meta: "vectorSearchScore" }, articleId: 1 } },
   ]);
 
-  const articleIds = similarEmbeddings.map((doc) => doc.articleId);
+  const articleIds = similarEmbeddings.filter(embedding => embedding.score >= 0.9).map((doc) => doc.articleId);
+  console.log(similarEmbeddings);
   const articles = await Article.find({ _id: { $in: articleIds } });
   const articlesMap = new Map(
     articles.map((article) => [article._id.toString(), article])
